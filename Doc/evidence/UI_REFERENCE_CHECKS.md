@@ -1,5 +1,7 @@
 # 设计稿前端验收
 
+本文件记录首版设计验收；后续已补充 [CV 上传/匹配结果](CV_MATCH_CHECKS.md) 与 [赞踩/帖子评论](COMMENT_INTERACTIONS_CHECKS.md)，以下“未新增”说明仅对应首版时点。
+
 日期：2026-10-10。分支：`feature/demo-ui`。来源：`Doc/Stripe docs.pdf` 的四页界面截图；使用 macOS PDFKit 渲染后逐页核对。
 
 ## 已实现

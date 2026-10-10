@@ -43,7 +43,10 @@ export interface AssessmentOutput {
   unknowns: string[];
 }
 export interface Assessment { id: string; jobId: string; modelId: string; promptVersion: string; createdAt: number; cached: boolean; output: AssessmentOutput }
-export interface Comment { id: string; authorLabel: string; body: string; isSynthetic: boolean; createdAt: number }
+export type Reaction = "LIKE" | "DISLIKE";
+export interface ReactionSummary { likes: number; dislikes: number; reaction: Reaction | null }
+export interface Comment extends ReactionSummary { id: string; authorLabel: string; body: string; isSynthetic: boolean; createdAt: number; replyCount: number }
+export interface CommentReply extends ReactionSummary { id: string; authorLabel: string; body: string; createdAt: number }
 export interface TopicComments { topicId: string; comments: Comment[]; totalCount: number; unlocked: boolean }
 export type Fulfillment = { status: "UNLOCKED" | "PENDING"; topicId: string };
 

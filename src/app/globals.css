@@ -258,6 +258,43 @@ input::placeholder, textarea::placeholder { color: #8894bb; }
 .thread-page h1 { font-size: 27px; margin-bottom: 25px; }
 .thread-root, .thread-comments li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 13px; }
 .thread-root { padding-bottom: 25px; }
+.comment-interactions { margin-top: 14px; }
+.comment-action-row, .reaction-buttons { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.comment-action-row { gap: 12px; }
+.reaction-button, .comment-reply-button { display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1px solid transparent; border-radius: 5px; color: #7884a8; padding: 5px 8px; font-size: 11px; line-height: 1.4; }
+.reaction-button:hover:not(:disabled), .comment-reply-button:hover { background: #f2f7fa; color: var(--green); }
+.reaction-button.is-liked { color: var(--green); border-color: #c8e9ec; background: #ecfafb; }
+.reaction-button.is-disliked { color: #a9535b; border-color: #f0d8dc; background: #fff4f5; }
+.reaction-count { font-size: 10px; font-variant-numeric: tabular-nums; min-width: 7px; }
+.reaction-error { color: var(--danger); font-size: 10px; margin-top: 5px; }
+.preview-comment-actions { padding: 0 0 13px 42px; margin-top: -8px; }
+.preview-comment-actions .comment-interactions { margin: 0; }
+.preview-comment-actions .comment-action-row { gap: 5px; }
+.preview-comment-actions .reaction-buttons { gap: 3px; }
+.preview-comment-actions .reaction-button, .preview-comment-actions .comment-reply-button { font-size: 9px; padding: 4px; gap: 4px; }
+.preview-comment-actions .reaction-count { font-size: 9px; }
+.preview-comment-actions svg { width: 12px; height: 12px; }
+.post-replies { margin-left: 47px; border-top: 1px solid var(--line); padding-top: 18px; }
+.reply-list-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.reply-list-heading h2 { font-size: 15px; }
+.reply-list-heading h2 span { color: #7685aa; font-size: 11px; margin-left: 4px; }
+.reply-list-heading > span { font-size: 10px; color: #8792b0; }
+.reply-list { list-style: none; margin: 0; padding: 0; }
+.reply-item { display: grid; grid-template-columns: 32px minmax(0,1fr); gap: 12px; padding: 15px 0; border-top: 1px solid #edf0f7; }
+.reply-item:first-child { border-top: 0; padding-top: 3px; }
+.reply-item .tag { margin-top: 6px; }
+.reply-item .comment-interactions { margin-top: 8px; }
+.reply-empty { font-size: 12px; color: #8591b0; padding: 16px; border: 1px dashed #dbe4f0; border-radius: 5px; background: #fbfcfe; }
+.reply-composer { margin: 20px 0 28px 47px; padding: 17px; border: 1px solid var(--line); border-radius: 7px; background: #f9fbfd; }
+.reply-composer-heading { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+.reply-composer h2 { font-size: 15px; }
+.reply-composer-heading p { color: #8491af; font-size: 10px; margin-top: 4px; }
+.reply-composer label { font-size: 11px; display: block; margin-bottom: 6px; }
+.reply-composer textarea { display: block; font-size: 12px; background: white; }
+.reply-form-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.reply-form-footer > span { font-size: 10px; color: #8a95b1; }
+.reply-form-footer .button { padding: 7px 12px; font-size: 11px; margin-left: auto; }
+.reply-composer .form-message:empty { display: none; }
 .thread-author { display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; margin: 1px 0 7px; }
 .thread-author strong { font-size: 12px; }
 .thread-author time { font-size: 10px; color: #939bbc; }
@@ -454,6 +491,8 @@ textarea { width: 100%; color: var(--ink); padding: 12px; font-size: 12px; line-
   .thread-toolbar { gap: 10px; }
   .thread-toolbar .button { font-size: 10px; padding: 7px 9px; }
   .thread-section-heading { flex-wrap: wrap; }
+  .post-replies, .reply-composer { margin-left: 0; }
+  .reply-composer { padding: 14px; }
   .thread-job { flex-wrap: wrap; gap: 6px; }
   .heading-count { font-size: 10px; }
   .panel, .side-note { padding: 22px; }

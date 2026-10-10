@@ -15,6 +15,7 @@
 - 新增 Stripe 官方 New Grad 岗位（Dublin HQ），用户指定添加日期 10 月 10 日，官方 logo、View job 外链已验收。默认 10 虚构 + 1 公开岗位，46 个测试通过；见 STRIPE_PUBLIC_JOB_CHECKS。
 - CV 侧栏按新增 demo 反馈更新：示意缩略图、原地 PDF/DOCX/TXT 上传、百分比和匹配/缺口列表、可展开 supporting 引文；53 个测试、生产构建及隔离浏览器验收通过，见 CV_MATCH_CHECKS。
 - 真实用户访谈、反馈修改、演示录屏：未完成。
+- 社区新增真实持久化 Like/Dislike 与帖子下方评论流程，62 个测试、生产构建及隔离浏览器通过；当前开发页面只读确认新按钮和评论框，见 COMMENT_INTERACTIONS_CHECKS。
 - 用户授权每次工作结束直接本地 commit，已写入 AGENTS.md 并更新阶段 prompts；不自动推送或部署。M0 提交标题为 `chore: complete M0 foundation and handoff`，实际 hash 用 git log 核查。
 
 ## 里程碑状态
@@ -38,7 +39,7 @@ M3 已完成；下一步按用户明确指令执行 M4/M5，保留真实 AI 与 
 
 - 本机 Node 24.16.0/npm 11.13.0，`.nvmrc` 与 package-lock 给出复现基线。
 - `npm ci` 安装；本次实际安装与离线重装使用 `--ignore-scripts --no-audit --no-fund --cache /tmp/hireland-npm-cache`。未执行供应商安装脚本；当前生产构建已通过。
-- `npm run check:m0`、typecheck、webpack 生产 build 通过；当前 `npm test` 53/53。M2 真实样例命令及浏览器证据见下文。
+- `npm run check:m0`、typecheck、webpack 生产 build 通过；当前 `npm test` 62/62。M2 真实样例命令及浏览器证据见下文。
 - OpenRouter 与 Stripe 实际产品调用已验证；Stripe webhook secret/真实自动事件转发未配置。
 - `npm run db:setup` 初始化与 seed；`npm run dev` 开发、`npm run build` 构建、`npm start` 生产运行。端口 3000，仅绑定 127.0.0.1；不要同时运行 dev/start。
 - `npm run typecheck` 先 `next typegen` 再 tsc；next-env 与 .next 类型忽略，不需提交。Next 自动修改 AGENTS 功能在配置中关闭，保留团队指令。
@@ -157,3 +158,13 @@ M3 已完成；下一步按用户明确指令执行 M4/M5，保留真实 AI 与 
 - 依赖锁定 `pdf-parse@2.4.5`、`mammoth@1.11.0`（npm install --save-exact --ignore-scripts）；Next serverExternalPackages 外置解析器，Server Action multipart 上限 6 MB，文件自身上限仍 5 MB。Context7 无 callable 工具；已告知用户并核对官方 Next Forms/serverActions/serverExternalPackages、pdf-parse/mammoth 文档。
 - 实际检查：Node 24.16.0，npm test **53/53 PASS**，check:m0/typecheck、production build **PASS**。浏览器使用 `/tmp/hireland-cv-preview/demo.sqlite` 与离线虚构结果，验证分数/文件卡片/摘要与完整引文展开、Update CV chooser/无跳转、错误保留旧结果、TXT 更新及刷新持久化、真实 PDF/DOCX 提取，1440/1024/768/390/320 无溢出，console/pageerror 空。见 `CV_MATCH_CHECKS.md`、`CV_MATCH_BROWSER_RESULT.json` 与两张截图；截图 85% 是隔离 UI fixture，不是本次真实 AI 请求。
 - 自动审批拒绝了在当前用户服务器点击 Check CV match 的浏览器验收，理由是可能向外部 AI 发送 CV；未执行该点击，改用隔离虚构数据完成验收。未进行新真实 AI/Stripe 调用，未修改凭据。提交标题 `feat: add inline CV attachments and evidence-based match layout`，hash 用 git log 查询；不推送/部署。
+
+## 社区赞踩与帖子下方评论（2026-10-10）
+
+- 用户要求截图红框加入 Like/Dislike，并补帖子下方评论流程。已在 feature/demo-ui 完成；提交标题 `feat: add persistent comment reactions and inline replies`，hash 用 git log 查询；不推送/部署。
+- 新增 comment-reactions.tsx 与 comment-thread.tsx，根帖和其评论均有 Like/Dislike/count/aria-pressed；同一用户一票，切换互斥，重复点击取消，pending 禁止重复提交。根帖 Comment 按钮聚焦下方编辑器，提交成功清空草稿、列表/数量刷新，错误保留草稿。单层评论真实关联当前帖子，不把其他独立帖子当回复；More from this conversation 仅在有其他帖时显示。侧栏也支持投票/评论数/进入正确评论框。
+- 迁移 005_comment_replies_and_reactions.sql 新建 comment_replies 和 comment_reactions，用户/帖子/评论外键，赞踩唯一约束、根/评论二选一 CHECK、删除级联；不改旧表/seed，不补假赞、踩、回复。当前用户数据库已升级，users/Profile/jobs/申请/日志/评估/topics/评论/付款/权益完整比对相同，新互动表初始为空。
+- server/community.ts 新增回复读取/写入与 desired-state 反应写入（重复请求幂等）；每次检查服务器身份、topic/root 归属及当前最新三帖/权益。回复票还检查 reply 的父帖；隐藏 root 的正文、回复与写操作均不可通过 ID 访问。Workspace 只含可见帖子的真实 count/票状态，不含回复正文。回复按创建时间/rowid 排序，同毫秒保持插入顺序。
+- 免费预览现在明确文案为最新三个 posts，包含可见帖的 comments；新增回复不改变根帖排序/计数，不自动授予权益或调用支付。首次旧帖互动均为 0；固定本地 demo-user 身份保持，无正式登录体系。
+- 实际检查：Node 24.16.0，npm test 62/62 PASS，check:m0/typecheck、production build PASS。隔离生产 3001 + /tmp/hireland-comment-preview/demo.sqlite 的虚构帖子/评论验证赞踩保存/切换/取消、刷新、评论输入焦点/空白禁用/提交/清空、回复独立票、侧栏同步、失败草稿保留、隐藏深链不泄漏、1440/1024/768/390/320 无溢出，console/pageerror 空。见 COMMENT_INTERACTIONS_CHECKS、BROWSER_RESULT 和两张截图。
+- 当前用户 3000 开发页面仅 GET 读取 HTTP 200，确认赞踩和评论框已渲染；没有在用户真实帖子投票或发表评论，没有新 AI/Stripe 调用，.env.local 未修改/输出/提交。Context7 仍无 callable 工具，已说明并核对 React useActionState 与 Next revalidatePath 官方文档；依赖/lockfile未改变。

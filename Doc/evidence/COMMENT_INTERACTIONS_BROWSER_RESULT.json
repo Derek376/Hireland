@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "environment": "Isolated production port 3001, temporary SQLite, fictional posts/replies; no user data edits or provider calls",
+  "checks": [
+    "Like saves and survives refresh; Dislike replaces Like; second click cancels",
+    "Comment focuses inline editor; whitespace blocked; posting appears beneath its parent and clears draft without navigation",
+    "Replies and separate reply votes persist after refresh without duplicating the post",
+    "Community sidebar shows real counts, supports votes and opens the correct comment form",
+    "Rejected or stale parent preserves the draft and creates no reply",
+    "A hidden post deep link reveals no parent body, replies or reply composer",
+    "Reaction controls, reply list and editor fit 1440/1024/768/390/320px"
+  ],
+  "dimensions": [
+    {
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "width": 320,
+      "scrollWidth": 320
+    }
+  ],
+  "externalRequests": 0,
+  "errors": []
+}

@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-export type IconName = "search" | "pin" | "building" | "bookmark" | "chat" | "chevron" | "arrow" | "back" | "close" | "check" | "lock" | "gift" | "file" | "sparkle" | "history" | "trash";
+export type IconName = "search" | "pin" | "building" | "bookmark" | "chat" | "chevron" | "arrow" | "back" | "close" | "check" | "lock" | "gift" | "file" | "sparkle" | "history" | "trash" | "like" | "dislike";
 const paths: Record<IconName, React.ReactNode> = {
   search: <><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 4 4" /></>,
   pin: <><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" /><circle cx="12" cy="10" r="2.5" /></>,
@@ -17,6 +17,8 @@ const paths: Record<IconName, React.ReactNode> = {
   sparkle: <path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z" />,
   history: <><path d="M3 11a9 9 0 1 1 2.4 7M3 4v7h7M12 7v5l3 2" /></>,
   trash: <><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7" /></>,
+  like: <><path d="M7 10H3v11h4V10Zm0 10h11a2 2 0 0 0 2-1.6l1-7A2 2 0 0 0 19 9h-6l1-5a2 2 0 0 0-2-2l-5 8v10Z" /></>,
+  dislike: <><path d="M7 14H3V3h4v11Zm0-10h11a2 2 0 0 1 2 1.6l1 7a2 2 0 0 1-2 2.4h-6l1 5a2 2 0 0 1-2 2l-5-8V4Z" /></>,
 };
 export function Icon({ name, size = 16, style }: { name: IconName; size?: number; style?: CSSProperties }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={style}>{paths[name]}</svg>;
