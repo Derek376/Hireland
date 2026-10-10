@@ -33,3 +33,20 @@ export function seedCommunity(): { topicsInserted: number; commentsInserted: num
     return { topicsInserted, commentsInserted };
   });
 }
+
+// Public snapshots have their own source file; never attach fictional seed comments.
+export function seedPublicJobs(): { inserted: number } {
+  const jobs = JSON.parse(readFileSync(resolve(process.cwd(), "data/seed/public-jobs.json"), "utf8")) as Job[];
+  const db = getDatabase();
+  return transaction(db, () => {
+    const insert = db.prepare("INSERT INTO jobs(id,job_key,company,title,location,category,description,source_type,source_url,apply_url,published_at,listed_at,last_checked_at,status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(job_key) DO NOTHING");
+    let inserted = 0;
+    for (const job of jobs) {
+      if (job.sourceType !== "public" || !job.sourceUrl || new URL(job.sourceUrl).protocol !== "https:" || !job.applyUrl || new URL(job.applyUrl).protocol !== "https:") throw new Error("Public jobs need HTTPS employer source and application URLs");
+      inserted += Number(insert.run(job.id, job.jobKey, job.company, job.title, job.location, job.category, job.description, job.sourceType, job.sourceUrl, job.applyUrl, job.publishedAt, job.listedAt ?? null, job.lastCheckedAt, job.status).changes);
+      const stored = db.prepare("SELECT id FROM jobs WHERE job_key=?").get(job.jobKey)!;
+      db.prepare("INSERT INTO topics VALUES (?,?) ON CONFLICT(job_id) DO NOTHING").run(`topic-${stored.id}`, stored.id);
+    }
+    return { inserted };
+  });
+}

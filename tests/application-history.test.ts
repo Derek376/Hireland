@@ -102,11 +102,12 @@ test("History migration preserves legacy business data and records an honest bas
       INSERT INTO assessments VALUES ('legacy-assessment','demo-user','legacy-job','hash','v1','fixture','{}',1);`);
     legacy.prepare("INSERT INTO schema_migrations VALUES ('001_initial.sql',?,1)").run(createHash("sha256").update(sql).digest("hex"));
     const tables = ["users", "jobs", "profiles", "applications", "topics", "comments", "purchases", "entitlements", "assessments"];
-    const before = tables.map(table => legacy.prepare(`SELECT * FROM ${table}`).all());
+    const queries = tables.map(table => `SELECT ${legacy.prepare(`PRAGMA table_info(${table})`).all().map(column => column.name).join(",")} FROM ${table}`);
+    const before = queries.map(query => legacy.prepare(query).all());
     legacy.close();
     const start = Date.now();
     const db = getDatabase();
-    assert.deepEqual(tables.map(table => db.prepare(`SELECT * FROM ${table}`).all()), before);
+    assert.deepEqual(queries.map(query => db.prepare(query).all()), before);
     const history = value(await listApplicationHistory());
     assert.equal(history.length, 1);
     assert.equal(history[0].kind, "BASELINE");
@@ -115,7 +116,7 @@ test("History migration preserves legacy business data and records an honest bas
     assert.ok(history[0].createdAt >= start);
     closeDatabase();
     assert.deepEqual(value(await listApplicationHistory()), history);
-    assert.equal(getDatabase().prepare("SELECT count(*) AS n FROM schema_migrations").get()?.n, 2);
+    assert.equal(getDatabase().prepare("SELECT count(*) AS n FROM schema_migrations").get()?.n, 3);
   } finally {
     closeDatabase();
     if (previous === undefined) delete process.env.DATABASE_PATH; else process.env.DATABASE_PATH = previous;

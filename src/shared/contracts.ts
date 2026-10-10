@@ -19,6 +19,7 @@ export interface Job {
   sourceUrl: string | null;
   applyUrl: string | null;
   publishedAt: number | null;
+  listedAt?: number | null;
   lastCheckedAt: number | null;
   status: "OPEN" | "CLOSED" | "UNKNOWN";
 }

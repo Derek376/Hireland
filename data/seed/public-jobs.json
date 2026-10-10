@@ -1,0 +1,18 @@
+[
+  {
+    "id": "stripe-8130881",
+    "jobKey": "public:stripe:8130881",
+    "company": "Stripe",
+    "title": "Software Engineer, New Grad",
+    "location": "Dublin HQ",
+    "category": "Technology",
+    "description": "Public listing summary from Stripe Careers; check the employer page for the complete, current information.\n\nFull-time engineering role on Stripe's University team in Dublin HQ. Build financial infrastructure and learn unfamiliar systems with experienced colleagues.\n\nRequirements\n- Computer science or related bachelor's/master's degree by summer 2027, or equivalent experience. New graduates: at most 18 months of professional experience, excluding internships.\n- Programming practice through coursework or personal projects; Java, Ruby, JavaScript, Scala and Go feature in Stripe's stack.\n- Internship or team coding-project experience, independent learning and clear written communication.\n- Use AI development tools while critically checking their outputs.\n\nPreferred qualifications\n- A technical speciality alongside broad skills, code review and safe production changes.\n- Large-codebase experience and independent ownership of small projects.\n\nOffice attendance varies by team; confirm expectations with the hiring manager.\nOfficial source: https://stripe.com/careers/listing/software-engineer-new-grad/8130881",
+    "sourceType": "public",
+    "sourceUrl": "https://stripe.com/careers/listing/software-engineer-new-grad/8130881",
+    "applyUrl": "https://stripe.com/careers/listing/software-engineer-new-grad/8130881",
+    "publishedAt": null,
+    "listedAt": 1791590400000,
+    "lastCheckedAt": 1791590400000,
+    "status": "OPEN"
+  }
+]

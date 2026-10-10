@@ -12,6 +12,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <details className="account-menu"><summary><span className="avatar">D</span><span>Demo Student</span><Icon name="chevron" size={14} /></summary><div className="account-links"><Link href="/profile">My CV & preferences</Link><Link href="/applications">My Tracker</Link><p>Local demo identity</p></div></details>
     </div></header>
     <main id="main" className="main-shell">{children}</main>
-    <footer className="site-footer"><span>Hireland · Your next step, in one place.</span><span>HackUCD prototype · Fictional vacancies · Community reports are unverified.</span></footer>
+    <footer className="site-footer"><span>Hireland · Your next step, in one place.</span><span>HackUCD prototype · Public listings and fictional demos · Community reports are unverified.</span></footer>
   </body></html>;
 }

@@ -1,0 +1,20 @@
+{
+  "retrievedAt": "2026-10-10",
+  "sourceType": "public",
+  "file": "public-jobs.json",
+  "jobCount": 1,
+  "sourceUrl": "https://stripe.com/careers/listing/software-engineer-new-grad/8130881",
+  "content": "Short paraphrased snapshot; original employer listing remains authoritative",
+  "listedAt": "2026-10-10",
+  "dateBasis": "Hireland date requested by the user; official publication date is not provided",
+  "availabilityBasis": "Official listing and application link accessible when checked; not automatically refreshed",
+  "logo": {
+    "file": "public/logos/stripe.svg",
+    "sourcePage": "https://stripe.com/newsroom/information",
+    "downloadUrl": "https://assets.stripeassets.com/fzn2n1nzq965/7q0dJGs6fRS1LRmMpChoAF/87def4edfbb7fd5aef4ab9baf904b2db/Stripe_logo_kit.zip",
+    "originalFile": "asset-wordmark/Stripe wordmark - Blurple.svg",
+    "usageTerms": "https://stripe.com/legal/marks",
+    "note": "Unmodified official wordmark, identifies the employer; no endorsement claimed"
+  },
+  "community": "Empty local topic; fictional seed comments are not attached to this real vacancy"
+}

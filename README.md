@@ -21,7 +21,7 @@ npm run dev
 
 My Tracker 中可直接点击阶段标签选择 Saved / Applied / Interview / Offer / Rejected，选择后自动保存。每个岗位下方的 History 展示修改时间与前后阶段，刷新或重启后保留；重复选择当前阶段不追加日志。已有记录从升级时的当前状态开始记历史，不补造之前的变化。Remove 移除该岗位及其日志。详见 [状态与日志验收](Doc/evidence/TRACKER_HISTORY_CHECKS.md)。
 
-无需供应商密钥即可浏览岗位、保存 Profile 和追踪申请；AI 分析需要 OpenRouter 配置。默认数据库 `data/hireland.sqlite`；只有单个本地演示用户，请使用虚构信息。10 个岗位与 CV 都是明确标注的 synthetic 数据，没有真实申请链接。
+无需供应商密钥即可浏览岗位、保存 Profile 和追踪申请；AI 分析需要 OpenRouter 配置。默认数据库 `data/hireland.sqlite`；只有单个本地演示用户，请使用虚构信息。默认数据包含 10 个明确标注的虚构岗位、虚构 CV，以及一条 [Stripe 官方 New Grad 岗位](https://stripe.com/careers/listing/software-engineer-new-grad/8130881)。Stripe 使用官方 logo，View job 跳转官网；列表 Added 10 Oct 是用户指定的 Hireland 添加日期，官方发布日期未知。公开岗位使用独立来源文件和空讨论，不附加虚构评论。
 
 `db:setup` 执行版本化迁移与幂等 seed；重复执行保留 Profile、申请、评论与权益，不覆盖已有岗位、不删除数据库。网页首次连接会补迁移与 demo 用户，但不会自动 seed 或 reset。更改已应用迁移会报错，后续修改应添加新迁移。
 
@@ -61,7 +61,7 @@ M2 实际功能验收（会产生四次真实 OpenRouter 请求并消耗额度�
 npm run check:m2 -- --write-evidence
 ```
 
-它使用独立临时 SQLite，不修改演示数据库；四组虚构输入分别覆盖匹配、不匹配、信息不足和明显指令干扰，每组重复读取核查缓存。仅缺配置退出 2，失败退出 1，通过退出 0。写入 evidence 时保留旧轮次。当前离线 `npm test` 共 42 个测试，模拟故障明确与真实调用分开。真实输出、历史质量迭代、浏览器操作和生产重启见 M2 证据。
+它使用独立临时 SQLite，不修改演示数据库；四组虚构输入分别覆盖匹配、不匹配、信息不足和明显指令干扰，每组重复读取核查缓存。仅缺配置退出 2，失败退出 1，通过退出 0。写入 evidence 时保留旧轮次。当前离线 `npm test` 共 46 个测试，模拟故障明确与真实调用分开。真实输出、历史质量迭代、浏览器操作和生产重启见 M2 证据。
 
 同输入、用户、模型和 prompt 的成功结果可复用；改 CV/偏好/JD 等会使当前缓存失效。请求 20 秒超时，无自动重试，同输入最多两次失败尝试（进程内预算，重启重置）。错误不显示假分数。引文校验只证明片段来自输入，不保证模型语义判断正确；分数不是录用概率。该原型使用固定本地 demo 身份。
 

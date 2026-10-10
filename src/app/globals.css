@@ -89,7 +89,8 @@ input::placeholder, textarea::placeholder { color: #8894bb; }
 .company-logo { width: 40px; height: 40px; flex-shrink: 0; border-radius: 7px; display: grid; place-items: center; font-size: 30px; font-weight: 700; color: var(--ink); background: #eff3fb; line-height: 1; }
 .company-logo.amazon { background: #fff4db; font-size: 35px; font-family: Georgia, serif; position: relative; padding-bottom: 4px; }
 .company-logo.amazon svg { position: absolute; width: 29px; bottom: 2px; left: 5px; }
-.company-logo.stripe { color: white; background: linear-gradient(130deg, #8a69ff, #6053ff); font-size: 32px; }
+.company-logo.stripe { background: #f1efff; }
+.company-logo.stripe img { width: 34px; height: auto; }
 .company-logo.google { background: conic-gradient(#4285f4 0deg 100deg, #34a853 100deg 160deg, #fbbc05 160deg 225deg, #ea4335 225deg 290deg, #4285f4 290deg); -webkit-background-clip: text; background-clip: text; color: transparent; font-size: 36px; }
 .company-logo.microsoft { background: white; padding: 5px; border: 1px solid #f0f1f7; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
 .company-logo.microsoft i { background: #f35325; height: 13px; }

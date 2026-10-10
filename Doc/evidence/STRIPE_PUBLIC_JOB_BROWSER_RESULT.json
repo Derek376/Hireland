@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "environment": "Isolated production port 3001, temporary SQLite; public Stripe snapshot, no AI/Checkout requests",
+  "checks": [
+    "Stripe is first, with Added 10 Oct, Dublin HQ and loaded official local SVG",
+    "real vacancy discussion starts empty and is labelled Public vacancy",
+    "public job saves to Tracker and reuses the official company logo",
+    "internal CV/tracking details retain an explicit user date and official employer link",
+    "Stripe job and external button fit desktop and 768/390/320px",
+    "clicking View job actually navigates to the supplied Stripe careers URL"
+  ],
+  "dimensions": [
+    {
+      "width": 1366,
+      "scrollWidth": 1366
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "width": 320,
+      "scrollWidth": 320
+    }
+  ],
+  "externalDestination": "https://stripe.com/careers/listing/software-engineer-new-grad/8130881",
+  "errors": []
+}

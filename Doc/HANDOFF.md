@@ -12,6 +12,7 @@
 - M3 社区与 Stripe sandbox：DONE。真实 €0.99 EUR Checkout 已成功，PaymentIntent succeeded，job-04 全部评论解锁；真实 webhook 自动投递未配置，返回确认/手动恢复可用。
 - 设计稿前端更新完成：按四页 `Doc/Stripe docs.pdf` 实现岗位列表、CV/社区侧栏、Tracker、评论详情及响应式布局；33 个离线测试、生产构建与浏览器交互通过，证据见 UI_REFERENCE_CHECKS。本次没有新增真实 AI/付款或用户反馈。
 - Tracker 已按用户反馈改为点击阶段直接选择、自动保存，并新增可展开的持久化变化日志；42 个测试及生产浏览器通过，升级迁移不覆盖已有数据，见 TRACKER_HISTORY_CHECKS。
+- 新增 Stripe 官方 New Grad 岗位（Dublin HQ），用户指定添加日期 10 月 10 日，官方 logo、View job 外链已验收。默认 10 虚构 + 1 公开岗位，46 个测试通过；见 STRIPE_PUBLIC_JOB_CHECKS。
 - 真实用户访谈、反馈修改、演示录屏：未完成。
 - 用户授权每次工作结束直接本地 commit，已写入 AGENTS.md 并更新阶段 prompts；不自动推送或部署。M0 提交标题为 `chore: complete M0 foundation and handoff`，实际 hash 用 git log 核查。
 
@@ -36,7 +37,7 @@ M3 已完成；下一步按用户明确指令执行 M4/M5，保留真实 AI 与 
 
 - 本机 Node 24.16.0/npm 11.13.0，`.nvmrc` 与 package-lock 给出复现基线。
 - `npm ci` 安装；本次实际安装与离线重装使用 `--ignore-scripts --no-audit --no-fund --cache /tmp/hireland-npm-cache`。未执行供应商安装脚本；当前生产构建已通过。
-- `npm run check:m0`、typecheck、webpack 生产 build 通过；当前 `npm test` 42/42。M2 真实样例命令及浏览器证据见下文。
+- `npm run check:m0`、typecheck、webpack 生产 build 通过；当前 `npm test` 46/46。M2 真实样例命令及浏览器证据见下文。
 - OpenRouter 与 Stripe 实际产品调用已验证；Stripe webhook secret/真实自动事件转发未配置。
 - `npm run db:setup` 初始化与 seed；`npm run dev` 开发、`npm run build` 构建、`npm start` 生产运行。端口 3000，仅绑定 127.0.0.1；不要同时运行 dev/start。
 - `npm run typecheck` 先 `next typegen` 再 tsc；next-env 与 .next 类型忽略，不需提交。Next 自动修改 AGENTS 功能在配置中关闭，保留团队指令。
@@ -135,3 +136,13 @@ M3 已完成；下一步按用户明确指令执行 M4/M5，保留真实 AI 与 
 - 验证：42/42 离线测试、typecheck、check:m0、最终 production build；Chrome 生产 3001 端口+临时虚构 DB 验证状态自动保存/计数/建议/日志、刷新、键盘焦点、阶段筛选后移出、删除和 320–1440px。结果/截图/命令见 `Doc/evidence/TRACKER_HISTORY_CHECKS.md`。没有新 AI/Stripe 调用，不将其冒充新的真实交易。
 - Context7 不可用，沿用 React/Next 官方文档回退；依赖/lockfile 未改。用户正在运行的开发服务与业务阶段不用于写入浏览器测试。
 - 下一步入口：刷新当前 My Tracker，点击阶段标签更改，展开 History 查看记录。全新进程连接自动应用迁移，已有进程可 `npm run db:migrate` 后刷新。此次用户反馈已处理，M4/M5 整体状态仍按原范围等待后续指令。
+
+## Stripe 公开岗位（2026-10-10）
+
+- 用户要求按 `https://stripe.com/careers/listing/software-engineer-new-grad/8130881` 新增岗位，日期设为 10 月 10 日，头像换 Stripe 图片，View job 进入外链。已在 `feature/demo-ui` 完成；提交标题 `feat: add public Stripe graduate role and official branding`，hash 用 git log 核查，不推送。
+- 官网读取核对后新增 `data/seed/public-jobs.json`（短改写摘要）与 public-manifest；默认 11 个岗位，公开数据与原 synthetic fixtures 分开，`seedPublicJobs()` 幂等添加并创建空讨论，不向真实岗位复制虚构评论。db:setup 包含公开导入。
+- 新增 migration 003，仅在 jobs 增加 listed_at，保存用户指定的添加日期；官方发布日期未给出，publishedAt 仍 null，UI 显示 Added 10 Oct。既有岗位新字段 null，不改原数据；按 listedAt 排序使 Stripe 在首位。
+- 公司图来自 Stripe 官方媒体 logo kit 的原始 Blurple SVG，保存 `public/logos/stripe.svg`。普通 anchor 的 View job 在当前页跳转原 URL；本地岗位详情/保存/CV/Tracker 继续可用。来源说明同步区分公开与演示数据。
+- 实际当前 DB migrate + 公共岗位单独导入新增 1，导入前后完整比较 Profile/申请/日志/评论/评估/购买/权益，均保持。`.env.local` 与已有记录未覆盖，没有新 AI/Stripe 支付调用。
+- 46/46 离线测试、check:m0/typecheck、production build PASS；实际 Chrome 临时生产 3001 核对岗位、日期、logo、保存、空讨论、详情与移动宽度，并点击 View job 验证真实官网导航。现有用户 3000 页只读检查也通过。截图/JSON/命令见 `Doc/evidence/STRIPE_PUBLIC_JOB_CHECKS.md`。
+- Context7 仍不可用，按官方 Next Image 文档回退；无依赖/lockfile 改动。后续刷新 Find jobs 即可看到新增岗位；未来状态需按官网复核，不宣称自动抓取或实时刷新。M4/M5 不因这次功能提前标完成。
