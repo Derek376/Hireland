@@ -17,6 +17,7 @@ export async function saveApplicationAction(_previous: FormState, data: FormData
 export async function updateApplicationAction(_previous: FormState, data: FormData): Promise<FormState> {
   const result = await updateApplication(String(data.get("applicationId") ?? ""), String(data.get("status") ?? "") as ApplicationStatus);
   if (!result.ok) return { status: "error", message: result.error.message };
+  revalidatePath("/");
   revalidatePath("/applications");
   revalidatePath(`/jobs/${result.value.jobId}`);
   return { status: "success", message: "Application status updated." };

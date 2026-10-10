@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "environment": "Production on isolated port 3001, temporary synthetic SQLite, empty provider credentials",
+  "checks": [
+    "old Manage application and Update status controls replaced with clickable stage select",
+    "select auto-saves, updates stage counts/next step, and records Applied → Interview",
+    "reload preserves status, transition and original save event",
+    "keyboard stage selection auto-saves, restores focus and appends Interview → Offer",
+    "editing a filtered stage removes the row and retains history under its new stage",
+    "separate Remove action persists without opening an edit form",
+    "open history and community fit 1440/1024/768/390/320px"
+  ],
+  "dimensions": [
+    {
+      "width": 1440,
+      "list": 1440,
+      "panel": 1440
+    },
+    {
+      "width": 1024,
+      "list": 1024,
+      "panel": 1024
+    },
+    {
+      "width": 768,
+      "list": 768,
+      "panel": 768
+    },
+    {
+      "width": 390,
+      "list": 390,
+      "panel": 390
+    },
+    {
+      "width": 320,
+      "list": 320,
+      "panel": 320
+    }
+  ],
+  "errors": []
+}

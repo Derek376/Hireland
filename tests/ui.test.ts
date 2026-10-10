@@ -36,6 +36,9 @@ test("Reference UI data: only authorized comments are serialized; reads create n
       const result = await getWorkspaceData(); assert.ok(result.ok);
       const row = result.value.jobs.find(item => item.job.id === "job-01")!;
       assert.equal(row.application?.status, "INTERVIEW");
+      assert.deepEqual(row.applicationHistory.map(event => event.kind), ["CHANGED", "CREATED"]);
+      assert.equal(row.applicationHistory[0].fromStatus, "SAVED");
+      assert.equal(row.applicationHistory[0].toStatus, "INTERVIEW");
       assert.equal(row.topic?.comments[0].body, "Fictional UI test: preparing interview examples.");
       assert.equal(row.topic?.comments.length, 3);
       assert.equal(row.topic?.totalCount, 7);

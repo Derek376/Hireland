@@ -32,7 +32,7 @@ test("M1: one database supports the complete local workflow", async t => {
       const db = getDatabase();
       assert.equal(db.prepare("PRAGMA foreign_keys").get()?.foreign_keys, 1);
       assert.equal(db.prepare("PRAGMA journal_mode").get()?.journal_mode, "wal");
-      assert.equal(db.prepare("SELECT count(*) AS n FROM schema_migrations").get()?.n, 1);
+      assert.equal(db.prepare("SELECT count(*) AS n FROM schema_migrations").get()?.n, 2);
       assert.deepEqual(seedJobs(), { total: 10, inserted: 10 });
       const profile = value(await saveProfile({ cvText: "Fictional React developer", preferences: ["Technology"] }));
       const application = value(await saveApplication("job-01"));
@@ -40,7 +40,7 @@ test("M1: one database supports the complete local workflow", async t => {
       assert.deepEqual(value(await getProfile()), profile);
       assert.equal(value(await listApplications())[0].id, application.id);
       closeDatabase();
-      assert.equal(getDatabase().prepare("SELECT count(*) AS n FROM schema_migrations").get()?.n, 1);
+      assert.equal(getDatabase().prepare("SELECT count(*) AS n FROM schema_migrations").get()?.n, 2);
     });
     await t.test("search is literal, parameterized, and handles no results and invalid input", async () => {
       assert.equal(value(await listJobs()).length, 10);
@@ -106,12 +106,12 @@ test("M1: one database supports the complete local workflow", async t => {
     });
     await t.test("editing applied migrations is rejected without deleting records", () => {
       const db = getDatabase();
-      const checksum = db.prepare("SELECT checksum FROM schema_migrations").get()?.checksum as string;
-      db.prepare("UPDATE schema_migrations SET checksum='changed'").run();
+      const checksum = db.prepare("SELECT checksum FROM schema_migrations WHERE version='001_initial.sql'").get()?.checksum as string;
+      db.prepare("UPDATE schema_migrations SET checksum='changed' WHERE version='001_initial.sql'").run();
       closeDatabase();
       assert.throws(() => getDatabase(), /Applied migration changed/);
       const repair = new DatabaseSync(path);
-      repair.prepare("UPDATE schema_migrations SET checksum=?").run(checksum);
+      repair.prepare("UPDATE schema_migrations SET checksum=? WHERE version='001_initial.sql'").run(checksum);
       repair.close();
       assert.equal(getDatabase().prepare("SELECT count(*) AS n FROM applications WHERE user_id='demo-user'").get()?.n, 1);
     });

@@ -24,6 +24,14 @@ export interface Job {
 }
 export interface Profile { cvText: string; preferences: Category[]; updatedAt: number }
 export interface Application { id: string; jobId: string; status: ApplicationStatus; createdAt: number; updatedAt: number }
+export interface ApplicationStatusEvent {
+  id: number;
+  applicationId: string;
+  fromStatus: ApplicationStatus | null;
+  toStatus: ApplicationStatus;
+  kind: "CREATED" | "BASELINE" | "CHANGED";
+  createdAt: number;
+}
 export interface EvidencePoint { reason: string; cvQuote: string | null; jdQuote: string | null }
 export interface AssessmentOutput {
   decision: Decision;
@@ -49,6 +57,7 @@ export interface HirelandServices {
   clearProfile(): Promise<Result<void>>;
   assessJob(jobId: string): Promise<Result<Assessment>>;
   listApplications(): Promise<Result<Application[]>>;
+  listApplicationHistory(): Promise<Result<ApplicationStatusEvent[]>>;
   saveApplication(jobId: string): Promise<Result<Application>>;
   updateApplication(applicationId: string, status: ApplicationStatus): Promise<Result<Application>>;
   deleteApplication(applicationId: string): Promise<Result<void>>;

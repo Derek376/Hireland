@@ -11,6 +11,7 @@
 - OpenRouter 真实功能：PASS，四组样例及生产浏览器调用成功。当前模型 `openai/gpt-4.1-mini`，prompt `hireland-assessment-v11`；密钥保存在忽略的 `.env.local`。M2 完成；用户在 2026-10-10 明确跳过真人试用，这不构成真实用户验证。
 - M3 社区与 Stripe sandbox：DONE。真实 €0.99 EUR Checkout 已成功，PaymentIntent succeeded，job-04 全部评论解锁；真实 webhook 自动投递未配置，返回确认/手动恢复可用。
 - 设计稿前端更新完成：按四页 `Doc/Stripe docs.pdf` 实现岗位列表、CV/社区侧栏、Tracker、评论详情及响应式布局；33 个离线测试、生产构建与浏览器交互通过，证据见 UI_REFERENCE_CHECKS。本次没有新增真实 AI/付款或用户反馈。
+- Tracker 已按用户反馈改为点击阶段直接选择、自动保存，并新增可展开的持久化变化日志；42 个测试及生产浏览器通过，升级迁移不覆盖已有数据，见 TRACKER_HISTORY_CHECKS。
 - 真实用户访谈、反馈修改、演示录屏：未完成。
 - 用户授权每次工作结束直接本地 commit，已写入 AGENTS.md 并更新阶段 prompts；不自动推送或部署。M0 提交标题为 `chore: complete M0 foundation and handoff`，实际 hash 用 git log 核查。
 
@@ -35,7 +36,7 @@ M3 已完成；下一步按用户明确指令执行 M4/M5，保留真实 AI 与 
 
 - 本机 Node 24.16.0/npm 11.13.0，`.nvmrc` 与 package-lock 给出复现基线。
 - `npm ci` 安装；本次实际安装与离线重装使用 `--ignore-scripts --no-audit --no-fund --cache /tmp/hireland-npm-cache`。未执行供应商安装脚本；当前生产构建已通过。
-- `npm run check:m0`、typecheck、webpack 生产 build 通过；当前 `npm test` 33/33。M2 真实样例命令及浏览器证据见下文。
+- `npm run check:m0`、typecheck、webpack 生产 build 通过；当前 `npm test` 42/42。M2 真实样例命令及浏览器证据见下文。
 - OpenRouter 与 Stripe 实际产品调用已验证；Stripe webhook secret/真实自动事件转发未配置。
 - `npm run db:setup` 初始化与 seed；`npm run dev` 开发、`npm run build` 构建、`npm start` 生产运行。端口 3000，仅绑定 127.0.0.1；不要同时运行 dev/start。
 - `npm run typecheck` 先 `next typegen` 再 tsc；next-env 与 .next 类型忽略，不需提交。Next 自动修改 AGENTS 功能在配置中关闭，保留团队指令。
@@ -124,3 +125,13 @@ M3 已完成；下一步按用户明确指令执行 M4/M5，保留真实 AI 与 
 - 本次 checkout 未包含历史本机 `.env.local` 或业务 SQLite；此前 M2/M3 的真实证据保留，没有覆盖。本次验收使用 `/tmp/hireland-ui-demo/demo.sqlite` 并创建虚构 CV/本地测试帖子和申请，未进行新 AI/Stripe 请求。不要把本次截图当成新的真实交易或用户反馈。新环境须自行配置忽略的 `.env.local`。
 - Context7 无 callable 工具，已告知用户并查阅 Next.js/React 官方文档。依赖版本和 lockfile未修改；Playwright 仅装于临时目录，不加入产品依赖。
 - 继续入口：`nvm use` → `npm ci` → `npm run db:setup` → `npm run dev`，端口 3000；右上角菜单编辑 CV，岗位 Check CV match/Discussions，My Tracker 管理申请。UI 请求已完成，不据此标 M4/M5 完成；按用户后续明确范围继续。
+
+## Tracker 反馈改进（2026-10-10）
+
+- 用户明确反馈 Manage application 的选择/提交块不干净，要求直接点击状态修改并记录变化。已在 `feature/demo-ui` 完成；提交标题 `feat: add inline tracker stages and persistent status history`，hash 用 git log 查询，不推送。
+- 新增 `components/tracker-controls.tsx`：原生阶段 select 自动执行现有 Server Action，pending/错误/键盘焦点处理；每岗位 History 时间线、独立 Remove。移除旧展开编辑块和未使用的表单组件，手机/侧栏布局仍可用。
+- 新增 migration 002 的 application_status_events 表及 shared ApplicationStatusEvent；server/applications 的首次保存/状态更改与日志在同一事务，按归属读取。相同状态无新日志/时间变化；删除级联日志。Workspace 聚合真实历史，action 刷新页面/Tracker/岗位。
+- 既有记录升级时仅添加真实当前状态的 BASELINE 与升级时间，明确没有过去的日志；没有补造 Saved→Applied 等历史。实际本地 db:migrate 已通过，保留申请/Profile/评论/评估/支付/权益，不删除或重置数据。`.env.local` 未改变/提交/输出。
+- 验证：42/42 离线测试、typecheck、check:m0、最终 production build；Chrome 生产 3001 端口+临时虚构 DB 验证状态自动保存/计数/建议/日志、刷新、键盘焦点、阶段筛选后移出、删除和 320–1440px。结果/截图/命令见 `Doc/evidence/TRACKER_HISTORY_CHECKS.md`。没有新 AI/Stripe 调用，不将其冒充新的真实交易。
+- Context7 不可用，沿用 React/Next 官方文档回退；依赖/lockfile 未改。用户正在运行的开发服务与业务阶段不用于写入浏览器测试。
+- 下一步入口：刷新当前 My Tracker，点击阶段标签更改，展开 History 查看记录。全新进程连接自动应用迁移，已有进程可 `npm run db:migrate` 后刷新。此次用户反馈已处理，M4/M5 整体状态仍按原范围等待后续指令。
