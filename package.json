@@ -1,0 +1,25 @@
+{
+  "name": "hireland",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24.16.0 <25", "npm": ">=11 <12" },
+  "packageManager": "npm@11.13.0",
+  "scripts": {
+    "check:m0": "node scripts/check-m0.mjs && tsc --noEmit",
+    "check:providers": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/check-providers.mjs"
+  },
+  "dependencies": {
+    "next": "16.4.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "server-only": "0.0.1",
+    "stripe": "23.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "typescript": "5.9.3"
+  }
+}

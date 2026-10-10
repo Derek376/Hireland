@@ -85,6 +85,11 @@ htmlcov/
 *.sqlite
 *.sqlite3
 *.db
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite-journal
+*.db-wal
+*.db-shm
 
 # =========================
 # Docker / local overrides
