@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "environment": "Isolated production port 3001, temporary SQLite, fictional CV and offline cached assessment; no real AI or Checkout requests",
+  "checks": [
+    "Saved match renders automatically above CV illustration, filename, matches, gaps and supporting evidence",
+    "Supporting details expand exact CV/JD quotes; long overview and provenance are under Supporting analysis",
+    "Thumbnail, score and requirement evidence fit desktop and 1024/768/390/320px",
+    "Update CV opens a chooser in place; invalid attachment keeps saved CV and score",
+    "TXT upload persists without navigation, hides obsolete match and requires explicit analysis consent",
+    "Production Server Action extracts and saves real DOCX and PDF attachments"
+  ],
+  "dimensions": [
+    {
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "width": 320,
+      "scrollWidth": 320
+    }
+  ],
+  "providerRequests": 0,
+  "uploadActions": 4,
+  "errors": []
+}

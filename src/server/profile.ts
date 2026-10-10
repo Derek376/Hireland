@@ -11,14 +11,15 @@ const categories: Category[] = ["Technology", "Finance", "Consulting", "Other"];
 export async function getProfile(): Promise<Result<Profile | null>> {
   return databaseResult(async () => {
     const user = await getCurrentDemoUser();
-    const row = getDatabase().prepare("SELECT cv_text,preferences_json,updated_at FROM profiles WHERE user_id=?").get(user.id) as { cv_text: string; preferences_json: string; updated_at: number } | undefined;
-    return success(row ? { cvText: row.cv_text, preferences: JSON.parse(row.preferences_json) as Category[], updatedAt: row.updated_at } : null);
+    const row = getDatabase().prepare("SELECT cv_text,preferences_json,updated_at,file_name FROM profiles WHERE user_id=?").get(user.id) as { cv_text: string; preferences_json: string; updated_at: number; file_name: string | null } | undefined;
+    return success(row ? { cvText: row.cv_text, preferences: JSON.parse(row.preferences_json) as Category[], updatedAt: row.updated_at, fileName: row.file_name } : null);
   });
 }
-export async function saveProfile(input: { cvText: string; preferences: Category[] }): Promise<Result<Profile>> {
+export async function saveProfile(input: { cvText: string; preferences: Category[]; fileName?: string }): Promise<Result<Profile>> {
   if (typeof input.cvText !== "string" || !input.cvText.trim()) return failure("VALIDATION", "Add CV text before saving your profile.");
   if (input.cvText.length > 12000) return failure("VALIDATION", "Your CV must be 12,000 characters or fewer. Please shorten it rather than losing text.");
   if (!Array.isArray(input.preferences) || !input.preferences.length || input.preferences.some(value => !categories.includes(value))) return failure("VALIDATION", "Choose at least one valid career direction.");
+  if (input.fileName !== undefined && (typeof input.fileName !== "string" || !input.fileName.trim() || input.fileName.length > 180 || /[\x00-\x1f/\\]/.test(input.fileName))) return failure("VALIDATION", "Choose a file with a valid filename of 180 characters or fewer.");
   return databaseResult(async () => {
     const user = await getCurrentDemoUser();
     const cvText = input.cvText.trim().replace(/\r\n?/g, "\n");
@@ -26,9 +27,10 @@ export async function saveProfile(input: { cvText: string; preferences: Category
     const existing = getDatabase().prepare("SELECT updated_at FROM profiles WHERE user_id=?").get(user.id)?.updated_at as number | undefined;
     const updatedAt = Math.max(Date.now(), (existing ?? 0) + 1, (profileClock.hirelandProfileClock ?? 0) + 1);
     profileClock.hirelandProfileClock = updatedAt;
-    getDatabase().prepare("INSERT INTO profiles VALUES (?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET cv_text=excluded.cv_text,cv_hash=excluded.cv_hash,preferences_json=excluded.preferences_json,updated_at=excluded.updated_at")
-      .run(user.id, cvText, createHash("sha256").update(cvText).digest("hex"), JSON.stringify(preferences), updatedAt);
-    return success({ cvText, preferences, updatedAt });
+    const fileName = input.fileName?.trim() ?? null;
+    getDatabase().prepare("INSERT INTO profiles(user_id,cv_text,cv_hash,preferences_json,updated_at,file_name) VALUES (?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET cv_text=excluded.cv_text,cv_hash=excluded.cv_hash,preferences_json=excluded.preferences_json,updated_at=excluded.updated_at,file_name=excluded.file_name")
+      .run(user.id, cvText, createHash("sha256").update(cvText).digest("hex"), JSON.stringify(preferences), updatedAt, fileName);
+    return success({ cvText, preferences, updatedAt, fileName });
   });
 }
 export async function clearProfile(): Promise<Result<void>> {

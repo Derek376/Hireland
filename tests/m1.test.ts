@@ -32,7 +32,7 @@ test("M1: one database supports the complete local workflow", async t => {
       const db = getDatabase();
       assert.equal(db.prepare("PRAGMA foreign_keys").get()?.foreign_keys, 1);
       assert.equal(db.prepare("PRAGMA journal_mode").get()?.journal_mode, "wal");
-      assert.equal(db.prepare("SELECT count(*) AS n FROM schema_migrations").get()?.n, 3);
+      assert.equal(db.prepare("SELECT count(*) AS n FROM schema_migrations").get()?.n, 4);
       assert.deepEqual(seedJobs(), { total: 10, inserted: 10 });
       const profile = value(await saveProfile({ cvText: "Fictional React developer", preferences: ["Technology"] }));
       const application = value(await saveApplication("job-01"));
@@ -40,7 +40,7 @@ test("M1: one database supports the complete local workflow", async t => {
       assert.deepEqual(value(await getProfile()), profile);
       assert.equal(value(await listApplications())[0].id, application.id);
       closeDatabase();
-      assert.equal(getDatabase().prepare("SELECT count(*) AS n FROM schema_migrations").get()?.n, 3);
+      assert.equal(getDatabase().prepare("SELECT count(*) AS n FROM schema_migrations").get()?.n, 4);
     });
     await t.test("search is literal, parameterized, and handles no results and invalid input", async () => {
       assert.equal(value(await listJobs()).length, 10);

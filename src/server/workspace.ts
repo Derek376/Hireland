@@ -7,10 +7,11 @@ import { getTopicForJob, getTopicComments } from "./community.ts";
 import { getAssessmentView } from "./assessments.ts";
 import { stripeClient } from "./providers/stripe.ts";
 import { success } from "./results.ts";
+import { getProfile } from "./profile.ts";
 
 // Read-only view data. Opening a list or panel never calls AI or creates a payment.
 export async function getWorkspaceData(): Promise<Result<WorkspaceData>> {
-  const [jobs, applications, history] = await Promise.all([listJobs(), listApplications(), listApplicationHistory()]);
+  const [jobs, applications, history, profile] = await Promise.all([listJobs(), listApplications(), listApplicationHistory(), getProfile()]);
   if (!jobs.ok) return jobs;
   if (!applications.ok) return applications;
   if (!history.ok) return history;
@@ -29,5 +30,5 @@ export async function getWorkspaceData(): Promise<Result<WorkspaceData>> {
       aiConfigured: assessment.ok && assessment.value.configured,
     };
   }));
-  return success({ jobs: rows, stripeConfigured: !!stripeClient() });
+  return success({ jobs: rows, stripeConfigured: !!stripeClient(), cv: profile.ok && profile.value ? { fileName: profile.value.fileName ?? null, updatedAt: profile.value.updatedAt } : null });
 }

@@ -13,6 +13,7 @@
 - 设计稿前端更新完成：按四页 `Doc/Stripe docs.pdf` 实现岗位列表、CV/社区侧栏、Tracker、评论详情及响应式布局；33 个离线测试、生产构建与浏览器交互通过，证据见 UI_REFERENCE_CHECKS。本次没有新增真实 AI/付款或用户反馈。
 - Tracker 已按用户反馈改为点击阶段直接选择、自动保存，并新增可展开的持久化变化日志；42 个测试及生产浏览器通过，升级迁移不覆盖已有数据，见 TRACKER_HISTORY_CHECKS。
 - 新增 Stripe 官方 New Grad 岗位（Dublin HQ），用户指定添加日期 10 月 10 日，官方 logo、View job 外链已验收。默认 10 虚构 + 1 公开岗位，46 个测试通过；见 STRIPE_PUBLIC_JOB_CHECKS。
+- CV 侧栏按新增 demo 反馈更新：示意缩略图、原地 PDF/DOCX/TXT 上传、百分比和匹配/缺口列表、可展开 supporting 引文；53 个测试、生产构建及隔离浏览器验收通过，见 CV_MATCH_CHECKS。
 - 真实用户访谈、反馈修改、演示录屏：未完成。
 - 用户授权每次工作结束直接本地 commit，已写入 AGENTS.md 并更新阶段 prompts；不自动推送或部署。M0 提交标题为 `chore: complete M0 foundation and handoff`，实际 hash 用 git log 核查。
 
@@ -37,7 +38,7 @@ M3 已完成；下一步按用户明确指令执行 M4/M5，保留真实 AI 与 
 
 - 本机 Node 24.16.0/npm 11.13.0，`.nvmrc` 与 package-lock 给出复现基线。
 - `npm ci` 安装；本次实际安装与离线重装使用 `--ignore-scripts --no-audit --no-fund --cache /tmp/hireland-npm-cache`。未执行供应商安装脚本；当前生产构建已通过。
-- `npm run check:m0`、typecheck、webpack 生产 build 通过；当前 `npm test` 46/46。M2 真实样例命令及浏览器证据见下文。
+- `npm run check:m0`、typecheck、webpack 生产 build 通过；当前 `npm test` 53/53。M2 真实样例命令及浏览器证据见下文。
 - OpenRouter 与 Stripe 实际产品调用已验证；Stripe webhook secret/真实自动事件转发未配置。
 - `npm run db:setup` 初始化与 seed；`npm run dev` 开发、`npm run build` 构建、`npm start` 生产运行。端口 3000，仅绑定 127.0.0.1；不要同时运行 dev/start。
 - `npm run typecheck` 先 `next typegen` 再 tsc；next-env 与 .next 类型忽略，不需提交。Next 自动修改 AGENTS 功能在配置中关闭，保留团队指令。
@@ -146,3 +147,13 @@ M3 已完成；下一步按用户明确指令执行 M4/M5，保留真实 AI 与 
 - 实际当前 DB migrate + 公共岗位单独导入新增 1，导入前后完整比较 Profile/申请/日志/评论/评估/购买/权益，均保持。`.env.local` 与已有记录未覆盖，没有新 AI/Stripe 支付调用。
 - 46/46 离线测试、check:m0/typecheck、production build PASS；实际 Chrome 临时生产 3001 核对岗位、日期、logo、保存、空讨论、详情与移动宽度，并点击 View job 验证真实官网导航。现有用户 3000 页只读检查也通过。截图/JSON/命令见 `Doc/evidence/STRIPE_PUBLIC_JOB_CHECKS.md`。
 - Context7 仍不可用，按官方 Next Image 文档回退；无依赖/lockfile 改动。后续刷新 Find jobs 即可看到新增岗位；未来状态需按官网复核，不宣称自动抓取或实时刷新。M4/M5 不因这次功能提前标完成。
+
+## CV 上传后状态与匹配结果（2026-10-10）
+
+- 用户明确要求红框放假的 CV 缩略图，并按 demo 重排下方结果，保留此前 Update CV 原地选择附件的需求。缩略图用 HTML/CSS 画示意文件，标 Sample preview，不依赖图片生成或真实 PDF 渲染，不假装展示简历内容。
+- `components/cv-match-profile.tsx` 显示 CV ready、实际文件名/更新时间；原文本 Profile 显示 Your saved CV。Update CV 打开 file input，不跳转。`assessment-panel.tsx` 自动显示当前有效结果，先百分比、文件卡片，再 Matched requirements / Gaps to review / Needs confirmation；条目有绿勾/黄叹号、JD/CV 摘录，Supporting details 展开完整原文和解释，长总评/来源放 Supporting analysis。无有效结果才显示 consent/Analyse；不复制 demo 88% 或制造匹配项。
+- `server/cv-upload.ts` 本地解析 PDF/DOCX/TXT，5 MB 文件/12,000 字符文本上限；类型、空文件、损坏/加密/扫描无文本、UTF-8/长度校验失败保留原 CV。保存文本、文件名，不保留二进制；不调用 AI，保留职业偏好（首次默认为 Technology）。Action 刷新 Profile/岗位/Tracker，新 CV 按既有输入 hash 使旧评估不可用于新内容，原成功评估历史不删除。
+- 新增迁移 `004_cv_attachment_name.sql`，只增加可空 file_name；saveProfile 改为显式列写入，粘贴文本清除旧 filename。当前用户数据库已应用迁移，逐表比对迁移前全部原字段，Profile/申请/状态日志/评估/评论/付款/权益相同，无 reset 或新虚构数据写入。Workspace 仅额外序列化 filename/updatedAt，不包含完整 CV。
+- 依赖锁定 `pdf-parse@2.4.5`、`mammoth@1.11.0`（npm install --save-exact --ignore-scripts）；Next serverExternalPackages 外置解析器，Server Action multipart 上限 6 MB，文件自身上限仍 5 MB。Context7 无 callable 工具；已告知用户并核对官方 Next Forms/serverActions/serverExternalPackages、pdf-parse/mammoth 文档。
+- 实际检查：Node 24.16.0，npm test **53/53 PASS**，check:m0/typecheck、production build **PASS**。浏览器使用 `/tmp/hireland-cv-preview/demo.sqlite` 与离线虚构结果，验证分数/文件卡片/摘要与完整引文展开、Update CV chooser/无跳转、错误保留旧结果、TXT 更新及刷新持久化、真实 PDF/DOCX 提取，1440/1024/768/390/320 无溢出，console/pageerror 空。见 `CV_MATCH_CHECKS.md`、`CV_MATCH_BROWSER_RESULT.json` 与两张截图；截图 85% 是隔离 UI fixture，不是本次真实 AI 请求。
+- 自动审批拒绝了在当前用户服务器点击 Check CV match 的浏览器验收，理由是可能向外部 AI 发送 CV；未执行该点击，改用隔离虚构数据完成验收。未进行新真实 AI/Stripe 调用，未修改凭据。提交标题 `feat: add inline CV attachments and evidence-based match layout`，hash 用 git log 查询；不推送/部署。

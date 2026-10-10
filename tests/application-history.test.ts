@@ -116,7 +116,7 @@ test("History migration preserves legacy business data and records an honest bas
     assert.ok(history[0].createdAt >= start);
     closeDatabase();
     assert.deepEqual(value(await listApplicationHistory()), history);
-    assert.equal(getDatabase().prepare("SELECT count(*) AS n FROM schema_migrations").get()?.n, 3);
+    assert.equal(getDatabase().prepare("SELECT count(*) AS n FROM schema_migrations").get()?.n, 4);
   } finally {
     closeDatabase();
     if (previous === undefined) delete process.env.DATABASE_PATH; else process.env.DATABASE_PATH = previous;

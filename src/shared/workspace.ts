@@ -11,4 +11,5 @@ export interface WorkspaceJob {
   profileReady: boolean;
   aiConfigured: boolean;
 }
-export interface WorkspaceData { jobs: WorkspaceJob[]; stripeConfigured: boolean }
+export interface CvSummary { fileName: string | null; updatedAt: number }
+export interface WorkspaceData { jobs: WorkspaceJob[]; stripeConfigured: boolean; cv: CvSummary | null }

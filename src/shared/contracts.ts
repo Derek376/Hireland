@@ -23,7 +23,7 @@ export interface Job {
   lastCheckedAt: number | null;
   status: "OPEN" | "CLOSED" | "UNKNOWN";
 }
-export interface Profile { cvText: string; preferences: Category[]; updatedAt: number }
+export interface Profile { cvText: string; preferences: Category[]; updatedAt: number; fileName?: string | null }
 export interface Application { id: string; jobId: string; status: ApplicationStatus; createdAt: number; updatedAt: number }
 export interface ApplicationStatusEvent {
   id: number;
