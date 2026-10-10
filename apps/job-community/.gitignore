@@ -1,0 +1,9 @@
+backend/target/
+backend/data/
+backend/.m2/
+.env
+.env.*
+!.env.example
+*.log
+.idea/
+.DS_Store
