@@ -17,3 +17,19 @@ export function seedJobs(): { total: number; inserted: number } {
     return { total: Number(db.prepare("SELECT count(*) AS count FROM jobs").get()?.count ?? 0), inserted };
   });
 }
+
+export function seedCommunity(): { topicsInserted: number; commentsInserted: number } {
+  const fixtures = JSON.parse(readFileSync(resolve(process.cwd(), "data/seed/comments.json"), "utf8")) as { id: string; authorLabel: string; body: string; createdAt: number }[];
+  const db = getDatabase();
+  return transaction(db, () => {
+    let topicsInserted = 0; let commentsInserted = 0;
+    const jobs = db.prepare("SELECT id FROM jobs WHERE source_type='synthetic' ORDER BY id").all();
+    for (const job of jobs) {
+      const proposedId = `topic-${job.id}`;
+      topicsInserted += Number(db.prepare("INSERT INTO topics VALUES (?,?) ON CONFLICT(job_id) DO NOTHING").run(proposedId, job.id).changes);
+      const topicId = db.prepare("SELECT id FROM topics WHERE job_id=?").get(job.id)!.id;
+      for (const item of fixtures) commentsInserted += Number(db.prepare("INSERT INTO comments VALUES (?,?,?,?,?,?) ON CONFLICT(id) DO NOTHING").run(`${topicId}:${item.id}`, topicId, item.authorLabel, item.body, 1, item.createdAt).changes);
+    }
+    return { topicsInserted, commentsInserted };
+  });
+}

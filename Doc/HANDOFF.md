@@ -8,8 +8,8 @@
 - 已分析原 PRD 与全部六页比赛 PDF，已编写单体方案和 M0–M5 开发 prompts。
 - 用户已明确要求：一个 monolith，不分多个应用。
 - 锁定并安装 Next.js 16.4.0、React 19.3.0、TypeScript 5.9.3、Stripe SDK 23.0.0；使用 Node 24.16.0/npm 11.13.0、内置 SQLite 3.53.0。M1 类型、业务测试、生产构建与浏览器操作通过。
-- OpenRouter 真实功能：PASS，四组样例及生产浏览器调用成功。当前模型 `openai/gpt-4.1-mini`，prompt `hireland-assessment-v11`；密钥保存在忽略的 `.env.local`。M2 技术完成，首位真人试用仍待记录。
-- Stripe sandbox 认证：BLOCKED，缺 test key；真实测试交易尚未实现。
+- OpenRouter 真实功能：PASS，四组样例及生产浏览器调用成功。当前模型 `openai/gpt-4.1-mini`，prompt `hireland-assessment-v11`；密钥保存在忽略的 `.env.local`。M2 完成；用户在 2026-10-10 明确跳过真人试用，这不构成真实用户验证。
+- M3 社区与 Stripe sandbox：DONE。真实 €0.99 EUR Checkout 已成功，PaymentIntent succeeded，job-04 全部评论解锁；真实 webhook 自动投递未配置，返回确认/手动恢复可用。
 - 真实用户访谈、反馈修改、演示录屏：未完成。
 - 用户授权每次工作结束直接本地 commit，已写入 AGENTS.md 并更新阶段 prompts；不自动推送或部署。M0 提交标题为 `chore: complete M0 foundation and handoff`，实际 hash 用 git log 核查。
 
@@ -19,8 +19,8 @@
 |---|---|---|
 | M0 范围与外部依赖检查 | DONE | Doc/evidence/M0_CHECKS.md；外部凭据阻塞明确记录，M1 可开始 |
 | M1 应用骨架与持久化 | DONE | Doc/evidence/M1_CHECKS.md；生产构建、10 个测试、浏览器操作与重启持久化 |
-| M2 真实 AI 核心闭环 | IN_PROGRESS | Doc/evidence/M2_CHECKS.md；技术验收通过，首位真人试用未完成 |
-| M3 社区与支付 bonus | NOT_STARTED | 无 |
+| M2 真实 AI 核心闭环 | DONE | 技术证据见 M2_CHECKS；用户明确跳过真人试用，无反馈证据 |
+| M3 社区与支付 bonus | DONE | M3_CHECKS、真实 Session/PaymentIntent、产品权益与重启证据 |
 | M4 测试与反馈迭代 | NOT_STARTED | 无 |
 | M5 复现与演示 | NOT_STARTED | 无 |
 
@@ -28,14 +28,14 @@
 
 ## 继续工作入口
 
-下一步补 M2 首位真实用户试用记录；用户若要求 M3，可沿用已通过技术验收的核心闭环继续社区与 sandbox 支付。阅读 AGENTS.md、README、单体计划和 M2 证据，不重建项目。真人反馈不能由 agent 浏览器检查替代，不因技术完成宣称比赛全部达标。
+M3 已完成；下一步按用户明确指令执行 M4/M5，保留真实 AI 与 sandbox 闭环。M2 真人试用已明确跳过，不继续请求该反馈。阅读 AGENTS.md、README、单体计划和 M2 证据，不重建项目。真人反馈不能由 agent 浏览器检查替代，不因技术完成宣称比赛全部达标。
 
 ## 环境与运行
 
 - 本机 Node 24.16.0/npm 11.13.0，`.nvmrc` 与 package-lock 给出复现基线。
-- `npm ci` 安装；本次实际安装与离线重装使用 `--ignore-scripts --no-audit --no-fund --cache /tmp/hireland-npm-cache`。未执行供应商安装脚本，后续 app build 仍需验证。
-- `npm run check:m0`、typecheck、webpack 生产 build 通过；当前 `npm test` 21/21。M2 真实样例命令及浏览器证据见下文。
-- OpenRouter 实际产品调用已验证；Stripe 配置仍缺，不能将综合 provider readiness 当作全部通过。
+- `npm ci` 安装；本次实际安装与离线重装使用 `--ignore-scripts --no-audit --no-fund --cache /tmp/hireland-npm-cache`。未执行供应商安装脚本；当前生产构建已通过。
+- `npm run check:m0`、typecheck、webpack 生产 build 通过；当前 `npm test` 30/30。M2 真实样例命令及浏览器证据见下文。
+- OpenRouter 与 Stripe 实际产品调用已验证；Stripe webhook secret/真实自动事件转发未配置。
 - `npm run db:setup` 初始化与 seed；`npm run dev` 开发、`npm run build` 构建、`npm start` 生产运行。端口 3000，仅绑定 127.0.0.1；不要同时运行 dev/start。
 - `npm run typecheck` 先 `next typegen` 再 tsc；next-env 与 .next 类型忽略，不需提交。Next 自动修改 AGENTS 功能在配置中关闭，保留团队指令。
 - 不在此文件存储密钥、完整 CV、真实个人资料或含凭据的日志。
@@ -93,3 +93,22 @@
 - 实验命令 `npm run check:m2 -- --write-evidence` 使用临时 DB，只用虚构 CV/JD；四次真实请求有费用。当前结果 `M2_REAL_RESULTS.json`；11 轮此前真实质量实验 `M2_REAL_ITERATIONS.json`；原输入 scenarios-v1.json 和当前 scenarios.json 保留来源 hash。JSON humanReview=PENDING，不是真人审核。
 - 浏览器证据 `M2_BROWSER_RESULT.json` 与两张 PNG。当前忽略的本机 DB 保留虚构 CV、job-04 的真实 v11 评估和 APPLIED，以及原 job-01 INTERVIEW；重启已核对。新 clone 无这些业务记录。
 - 剩余：首位求职用户试用/匿名反馈。收到“继续”不能写成反馈；按 USER_RESEARCH.md 收集观察，必要时修改后再标 DONE。M3/M4/M5 未实施，Stripe sandbox 尚无真实交易。当前状态 IN_PROGRESS 仅因真人试用未完成，代码和技术验收已经完成。
+
+### 用户范围调整（2026-10-10）
+
+用户要求忽略真实用户试用反馈，并开始 M3；按上下文将其“把 m3 标注为完成”理解为 M2。M2 标 DONE，真人研究没有完成；比赛 Users first/用户假设证据仍缺，不承诺满足所有评分。M3 不提前标 DONE，须核对真实 sandbox 交易与产品权益。以上优先于前文历史待办。
+
+## M3 实施交接
+
+- 提交标题：`feat: complete M3 community and Stripe sandbox checkout`，hash 用 git log 查询；不推送/部署。
+- 实现：server/community.ts、billing.ts、providers/stripe.ts、stripe-webhook.ts；actions/community.ts、components/community-forms.tsx；topics/[topicId]、checkout/return、api/stripe/webhook。岗位页增加同一岗位讨论入口。
+- 无 schema 变更。db:setup 附加 seedCommunity，六条原创评论模板按固定 ID 加到十个 synthetic 岗位，不覆盖已有用户帖子/购买/权益。免费 SQL LIMIT 3，不返回隐藏正文；有权益返回全部。
+- Stripe SDK 23 默认 endive API；create 使用 allowed_payment_method_types/card、inline EUR 99 price_data，不需 STRIPE_TOPIC_PRICE_ID；原 M0 Price 配置决定已被此次实现调整。API 返回的价格、商品、数量与订单绑定在履约时全部核查。
+- 服务端 stable Purchase ID/idempotency key、单进程重复创建合并、未付款 open Session 复用、取消不发权益、expired 重建。创建不明保留 CREATING 可重试；已付写库失败可重试确认。事务 PAID+唯一 Entitlement；返回页检查当前用户，签名 webhook 调同一内部逻辑。
+- APP_URL 仅 loopback HTTP origin；使用用户当前 `.env.local` 的 localhost:3000 也已验证。密钥在忽略文件，真实 sandbox key 已由用户配置；无真实收款。SDK timeout20秒/一次网络重试。
+- 实际命令：db:setup 新增10/60，重复db:seed新增0；30测试、check:m0/typecheck、最终build全通过。真实浏览器发帖/免费3条/取消/同一Checkout重用/官方测试卡付款/返回确认/7条解锁；生产重启、另一话题锁定、伪造返回ID失败、390px检查通过。
+- `npm run check:m3 -- --write-evidence` 从本地已记录的当前用户订单取 Session，用真实 API 复核 Session/PaymentIntent 并做幂等本地确认；不自动创建订单或支付。缺配置/缺交易退出2，失败1，通过0。详见 M3_CHECKS。
+- 证据：M3_REAL_RESULT、UNPAID_RESULT、BROWSER_RESULT 与四张 PNG；Session `cs_test_a1nou05Nvsd00vlXZ2zt3y5nZ2YEkNQ6jCkur3dxFlDsjBs0XdBQ3pwvNX`，PaymentIntent `pi_3UOyl7Rzj2dmuCm90ax4mpgP`。这些是测试标识，不是密钥。
+- 本机数据库：job-04 PAID、一个 Entitlement、6 fictional seed + 1 agent 写的虚构测试帖；job-01 INTERVIEW/job-04 APPLIED 与 M2 AI 原 ID/时间保留。新 clone 无业务记录；不要 reset 演示证据。
+- 真实 webhook 自动投递未配置，签名/重放/错误路径只有离线证据；返回确认与手动 Check payment 可用。本地自动 forwarding 可后续补，但不要声称已验证。M3 的真实 sandbox 购买和产品权益退出条件已达成。
+- 用户已跳过真人反馈，仍不等于比赛用户假设已验证。M4/M5 尚未实施；不擅自启动下一里程碑。

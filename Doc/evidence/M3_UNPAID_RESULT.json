@@ -1,0 +1,21 @@
+{
+  "recordedAt": "2026-10-10T11:46:48.708Z",
+  "source": "Actual production raw HTML and real Stripe retrieval after browser cancel, before payment",
+  "hiddenBodiesAbsent": true,
+  "confirmation": {
+    "ok": true,
+    "value": {
+      "status": "PENDING",
+      "topicId": "topic-job-04"
+    }
+  },
+  "purchase": {
+    "id": "b03a334b-b78e-4d04-a6f8-f23d130cc7d8",
+    "topic_id": "topic-job-04",
+    "stripe_session_id": "cs_test_a1nou05Nvsd00vlXZ2zt3y5nZ2YEkNQ6jCkur3dxFlDsjBs0XdBQ3pwvNX",
+    "status": "PENDING",
+    "expected_amount": 99,
+    "currency": "eur"
+  },
+  "entitlements": 0
+}

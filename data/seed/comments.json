@@ -1,0 +1,38 @@
+[
+  {
+    "id": "comment-01",
+    "authorLabel": "Avery (fictional)",
+    "body": "I would compare the stated core requirements with my project examples before applying.",
+    "createdAt": 1791532800000
+  },
+  {
+    "id": "comment-02",
+    "authorLabel": "Blake (fictional)",
+    "body": "The fixture does not say whether visa sponsorship is available. I would ask rather than assume.",
+    "createdAt": 1791532860000
+  },
+  {
+    "id": "comment-03",
+    "authorLabel": "Casey (fictional)",
+    "body": "I would prepare one short example of how I debugged a project.",
+    "createdAt": 1791532920000
+  },
+  {
+    "id": "comment-04",
+    "authorLabel": "Devon (fictional)",
+    "body": "The vacancy is fictional. There is no real application or interview outcome here.",
+    "createdAt": 1791532980000
+  },
+  {
+    "id": "comment-05",
+    "authorLabel": "Emery (fictional)",
+    "body": "A missing skill in a CV is a question to investigate, not proof that someone cannot do it.",
+    "createdAt": 1791533040000
+  },
+  {
+    "id": "comment-06",
+    "authorLabel": "Finley (fictional)",
+    "body": "I would keep my application status in the tracker and double-check the actual role requirements.",
+    "createdAt": 1791533100000
+  }
+]

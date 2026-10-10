@@ -19,7 +19,8 @@
     "test": "node --conditions=react-server --test tests/*.test.ts",
     "check:m0": "node scripts/check-m0.mjs && npm run typecheck",
     "check:providers": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/check-providers.mjs",
-    "check:m2": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/check-m2.ts"
+    "check:m2": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/check-m2.ts",
+    "check:m3": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/check-m3.ts"
   },
   "dependencies": {
     "next": "16.4.0",

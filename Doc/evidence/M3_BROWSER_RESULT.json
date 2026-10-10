@@ -1,0 +1,35 @@
+{
+  "recordedAt": "2026-10-10T11:50:49.020Z",
+  "source": "Browser journey plus actual production restart, SQLite and raw HTTP readback",
+  "purchase": {
+    "id": "b03a334b-b78e-4d04-a6f8-f23d130cc7d8",
+    "status": "PAID",
+    "stripe_session_id": "cs_test_a1nou05Nvsd00vlXZ2zt3y5nZ2YEkNQ6jCkur3dxFlDsjBs0XdBQ3pwvNX"
+  },
+  "entitlementCount": 1,
+  "unlockedCommentCount": 7,
+  "otherTopicLocked": true,
+  "otherTopicHiddenBodiesAbsent": true,
+  "previousAssessmentPreserved": true,
+  "applications": [
+    {
+      "job_id": "job-01",
+      "status": "INTERVIEW"
+    },
+    {
+      "job_id": "job-04",
+      "status": "APPLIED"
+    }
+  ],
+  "mobile": {
+    "viewport": 390,
+    "documentWidth": 390,
+    "source": "Actual browser DOM inspection; override reset"
+  },
+  "seedRepeat": {
+    "jobsInserted": 0,
+    "topicsInserted": 0,
+    "commentsInserted": 0
+  },
+  "webhookLiveDelivery": "NOT_CONFIGURED; signed processing and failure paths tested offline, not claimed as real delivery"
+}

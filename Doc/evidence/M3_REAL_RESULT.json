@@ -1,0 +1,44 @@
+{
+  "recordedAt": "2026-10-10T11:49:22.292Z",
+  "source": "Actual Stripe sandbox Checkout completed through browser; real API retrieval and idempotent local fulfillment. No simulated payment.",
+  "purchase": {
+    "id": "b03a334b-b78e-4d04-a6f8-f23d130cc7d8",
+    "topic_id": "topic-job-04",
+    "expected_amount": 99,
+    "currency": "eur",
+    "stripe_session_id": "cs_test_a1nou05Nvsd00vlXZ2zt3y5nZ2YEkNQ6jCkur3dxFlDsjBs0XdBQ3pwvNX",
+    "status": "PAID",
+    "created_at": 1791632774833,
+    "updated_at": 1791632962128
+  },
+  "stripe": {
+    "sessionId": "cs_test_a1nou05Nvsd00vlXZ2zt3y5nZ2YEkNQ6jCkur3dxFlDsjBs0XdBQ3pwvNX",
+    "livemode": false,
+    "status": "complete",
+    "paymentStatus": "paid",
+    "currency": "eur",
+    "amountTotal": 99,
+    "mode": "payment",
+    "quantity": 1,
+    "priceId": "price_1UOyjDRzj2dmuCm9t6lhmNTv",
+    "unitAmount": 99,
+    "productId": "prod_VPoLewONjtrE7Q",
+    "paymentIntentId": "pi_3UOyl7Rzj2dmuCm90ax4mpgP",
+    "paymentIntentStatus": "succeeded",
+    "amountReceived": 99
+  },
+  "product": {
+    "topicId": "topic-job-04",
+    "unlocked": true,
+    "visibleComments": 7,
+    "totalComments": 7,
+    "entitlementCount": 1,
+    "repeatConfirmation": true
+  },
+  "limitations": [
+    "Only fictional checkout details and official test card used",
+    "No real money collected",
+    "This does not prove willingness to pay or judge award",
+    "Real webhook delivery not claimed; return confirmation and manual recovery suffice locally"
+  ]
+}

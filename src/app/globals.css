@@ -22,3 +22,9 @@
 .evidence-point dd { margin: .25rem 0 0; color: #526057; white-space: pre-wrap; }
 .evidence-group ul { padding-left: 1.2rem; font-size: .85rem; line-height: 1.6; }
 .assessment-provenance { border-top: 1px solid #d7dfd7; padding-top: 1rem; }
+
+.comment-list { list-style: none; padding: 0; margin: 0; }
+.comment-list li { padding: 1.25rem 0; border-top: 1px solid var(--line, #ddd); }
+.comment-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+.comment-body { white-space: pre-wrap; overflow-wrap: anywhere; }
+.payment-receipt { overflow-wrap: anywhere; }
