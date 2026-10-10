@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Navigation } from "@/components/navigation";
+import { Icon } from "@/components/icon";
 import "./globals.css";
-
-export const metadata: Metadata = { title: "Hireland — a little clarity for your next step", description: "Discover fictional graduate roles, prepare your profile and keep your job search in one place." };
+export const metadata: Metadata = { title: "Hireland — find your next opportunity", description: "Find graduate roles, compare your CV and keep your applications in one place. A transparent student prototype." };
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" data-scroll-behavior="smooth"><body><a href="#main" className="skip-link">Skip to content</a>
-    <header className="site-header"><div className="header-inner"><Link href="/" className="brand" aria-label="Hireland home"><span className="brand-symbol" aria-hidden="true">h.</span>hireland<span className="brand-dot">✳</span></Link><Navigation /><span className="demo-user"><span className="user-dot" />Demo Student</span></div></header>
+  return <html lang="en"><body><a href="#main" className="skip-link">Skip to content</a>
+    <header className="site-header"><div className="header-inner"><Link href="/" className="brand" aria-label="Hireland home">Hireland</Link><Navigation />
+      <details className="account-menu"><summary><span className="avatar">D</span><span>Demo Student</span><Icon name="chevron" size={14} /></summary><div className="account-links"><Link href="/profile">My CV & preferences</Link><Link href="/applications">My Tracker</Link><p>Local demo identity</p></div></details>
+    </div></header>
     <main id="main" className="main-shell">{children}</main>
-    <footer className="site-footer"><span>hireland · built for your next chapter</span><span>HackUCD prototype · Fictional data · Local demo user</span></footer>
+    <footer className="site-footer"><span>Hireland · Your next step, in one place.</span><span>HackUCD prototype · Fictional vacancies · Community reports are unverified.</span></footer>
   </body></html>;
 }

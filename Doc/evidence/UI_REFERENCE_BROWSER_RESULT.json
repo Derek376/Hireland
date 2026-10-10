@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "environment": "Production build, temporary SQLite, synthetic jobs and locally-created tracker/posts, no provider requests",
+  "checks": [
+    "company search: 2 actual matches",
+    "location filter",
+    "empty search and clear filters",
+    "save job and refreshed saved state",
+    "blank comment server validation",
+    "post refreshes drawer and still only 3 comments",
+    "comment filter",
+    "persisted tracker status update",
+    "CV drawer reads saved profile without an AI request",
+    "hidden-comment deep link cannot render body",
+    "no horizontal overflow at 1440/1024/768/390/320 with panel open and closed"
+  ],
+  "dimensions": [
+    {
+      "width": 1440,
+      "list": 1440,
+      "panel": 1440
+    },
+    {
+      "width": 1024,
+      "list": 1024,
+      "panel": 1024
+    },
+    {
+      "width": 768,
+      "list": 768,
+      "panel": 768
+    },
+    {
+      "width": 390,
+      "list": 390,
+      "panel": 390
+    },
+    {
+      "width": 320,
+      "list": 320,
+      "panel": 320
+    }
+  ],
+  "errors": []
+}

@@ -10,5 +10,7 @@ export async function assessJobAction(_previous: AssessmentState, data: FormData
   const result = await assessJob(jobId);
   if (validId(jobId)) revalidatePath(`/jobs/${jobId}`);
   if (!result.ok) return { assessment: null, message: result.error.message, retryable: result.error.retryable, failed: true };
+  revalidatePath("/");
+  revalidatePath("/applications");
   return { assessment: result.value, message: result.value.cached ? "Showing a saved assessment for these exact inputs. No new AI request." : "Assessment verified and saved locally.", retryable: false, failed: false };
 }

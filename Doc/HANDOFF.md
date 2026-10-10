@@ -10,6 +10,7 @@
 - 锁定并安装 Next.js 16.4.0、React 19.3.0、TypeScript 5.9.3、Stripe SDK 23.0.0；使用 Node 24.16.0/npm 11.13.0、内置 SQLite 3.53.0。M1 类型、业务测试、生产构建与浏览器操作通过。
 - OpenRouter 真实功能：PASS，四组样例及生产浏览器调用成功。当前模型 `openai/gpt-4.1-mini`，prompt `hireland-assessment-v11`；密钥保存在忽略的 `.env.local`。M2 完成；用户在 2026-10-10 明确跳过真人试用，这不构成真实用户验证。
 - M3 社区与 Stripe sandbox：DONE。真实 €0.99 EUR Checkout 已成功，PaymentIntent succeeded，job-04 全部评论解锁；真实 webhook 自动投递未配置，返回确认/手动恢复可用。
+- 设计稿前端更新完成：按四页 `Doc/Stripe docs.pdf` 实现岗位列表、CV/社区侧栏、Tracker、评论详情及响应式布局；33 个离线测试、生产构建与浏览器交互通过，证据见 UI_REFERENCE_CHECKS。本次没有新增真实 AI/付款或用户反馈。
 - 真实用户访谈、反馈修改、演示录屏：未完成。
 - 用户授权每次工作结束直接本地 commit，已写入 AGENTS.md 并更新阶段 prompts；不自动推送或部署。M0 提交标题为 `chore: complete M0 foundation and handoff`，实际 hash 用 git log 核查。
 
@@ -34,7 +35,7 @@ M3 已完成；下一步按用户明确指令执行 M4/M5，保留真实 AI 与 
 
 - 本机 Node 24.16.0/npm 11.13.0，`.nvmrc` 与 package-lock 给出复现基线。
 - `npm ci` 安装；本次实际安装与离线重装使用 `--ignore-scripts --no-audit --no-fund --cache /tmp/hireland-npm-cache`。未执行供应商安装脚本；当前生产构建已通过。
-- `npm run check:m0`、typecheck、webpack 生产 build 通过；当前 `npm test` 30/30。M2 真实样例命令及浏览器证据见下文。
+- `npm run check:m0`、typecheck、webpack 生产 build 通过；当前 `npm test` 33/33。M2 真实样例命令及浏览器证据见下文。
 - OpenRouter 与 Stripe 实际产品调用已验证；Stripe webhook secret/真实自动事件转发未配置。
 - `npm run db:setup` 初始化与 seed；`npm run dev` 开发、`npm run build` 构建、`npm start` 生产运行。端口 3000，仅绑定 127.0.0.1；不要同时运行 dev/start。
 - `npm run typecheck` 先 `next typegen` 再 tsc；next-env 与 .next 类型忽略，不需提交。Next 自动修改 AGENTS 功能在配置中关闭，保留团队指令。
@@ -112,3 +113,14 @@ M3 已完成；下一步按用户明确指令执行 M4/M5，保留真实 AI 与 
 - 本机数据库：job-04 PAID、一个 Entitlement、6 fictional seed + 1 agent 写的虚构测试帖；job-01 INTERVIEW/job-04 APPLIED 与 M2 AI 原 ID/时间保留。新 clone 无业务记录；不要 reset 演示证据。
 - 真实 webhook 自动投递未配置，签名/重放/错误路径只有离线证据；返回确认与手动 Check payment 可用。本地自动 forwarding 可后续补，但不要声称已验证。M3 的真实 sandbox 购买和产品权益退出条件已达成。
 - 用户已跳过真人反馈，仍不等于比赛用户假设已验证。M4/M5 尚未实施；不擅自启动下一里程碑。
+
+## 设计稿前端交接（2026-10-10）
+
+- 用户要求按 `Doc/Stripe docs.pdf` 修改前端。当前仓库已经是 M0–M3 Next.js 单体；在 `feature/demo-ui` 分支工作。提交标题 `feat: match frontend to reference demo design`，实际 hash 用 git log 查询；不推送/部署。
+- 全局 CSS/layout/navigation 对齐四页设计截图；新增 `components/workspace.tsx`、community-preview、icon/company-logo；Find jobs 与 My Tracker 共享布局、实际搜索/状态/保存和 CV/社区侧栏。Topic 页面支持授权评论详情及返回原侧栏，Profile/岗位详情沿用既有能力并统一主题。
+- 新增 server/workspace.ts 与 shared/workspace.ts，只聚合既有服务的授权评论、真实申请与有效评估。不自动调用 provider、不泄漏完整 CV 或隐藏正文。评估/发帖/付款恢复 actions 刷新列表和 Tracker；没有数据库 schema/seed/reset 变更。
+- 设计中的回复线程、点赞、评论收藏未新增；现有平铺评论不伪装成回复。缺少截止日期/分数时明确说明，不复制设计稿示例数值；Tracker Next step 是按阶段给出的建议。
+- Node 24.16.0 从临时官方分发包运行；npm ci 安装，33/33 离线测试、typecheck、check:m0、production build 通过。生产 Chrome/Playwright 验证搜索/空结果、保存刷新、发帖/三条权限、状态修改、保存 CV、详情返回、隐藏评论深链与 320–1440px 无溢出，console/pageerror 为空。命令、截图与 JSON 见 `Doc/evidence/UI_REFERENCE_CHECKS.md`。
+- 本次 checkout 未包含历史本机 `.env.local` 或业务 SQLite；此前 M2/M3 的真实证据保留，没有覆盖。本次验收使用 `/tmp/hireland-ui-demo/demo.sqlite` 并创建虚构 CV/本地测试帖子和申请，未进行新 AI/Stripe 请求。不要把本次截图当成新的真实交易或用户反馈。新环境须自行配置忽略的 `.env.local`。
+- Context7 无 callable 工具，已告知用户并查阅 Next.js/React 官方文档。依赖版本和 lockfile未修改；Playwright 仅装于临时目录，不加入产品依赖。
+- 继续入口：`nvm use` → `npm ci` → `npm run db:setup` → `npm run dev`，端口 3000；右上角菜单编辑 CV，岗位 Check CV match/Discussions，My Tracker 管理申请。UI 请求已完成，不据此标 M4/M5 完成；按用户后续明确范围继续。

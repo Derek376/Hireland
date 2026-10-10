@@ -10,7 +10,9 @@ export async function addCommentAction(_state: FormState, data: FormData): Promi
   const result = await addComment(topicId, String(data.get("body") ?? ""));
   if (!result.ok) return { status: "error", message: result.error.message };
   revalidatePath(`/topics/${topicId}`);
-  return { status: "success", message: "Comment saved. Only the latest three comments are visible until this discussion is unlocked." };
+  revalidatePath("/");
+  revalidatePath("/applications");
+  return { status: "success", message: result.value.unlocked ? "Comment saved to this discussion." : "Comment saved. Your free preview shows the latest three comments." };
 }
 export async function checkoutAction(_state: FormState, data: FormData): Promise<FormState> {
   const result = await createCheckout(String(data.get("topicId") ?? ""));
@@ -22,5 +24,7 @@ export async function recoverPaymentAction(_state: FormState, data: FormData): P
   const result = await recoverTopic(topicId);
   if (!result.ok) return { status: "error", message: result.error.message };
   revalidatePath(`/topics/${topicId}`);
+  revalidatePath("/");
+  revalidatePath("/applications");
   return { status: "success", message: result.value.status === "UNLOCKED" ? "Stripe payment confirmed. Discussion unlocked." : "No paid checkout found yet. No access granted or new charge created." };
 }
