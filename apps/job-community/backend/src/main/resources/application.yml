@@ -1,0 +1,28 @@
+server:
+  port: 8083
+  address: 127.0.0.1
+logging:
+  pattern:
+    level: "%5p [requestId:%X{requestId}]"
+spring:
+  application:
+    name: job-community
+  datasource:
+    url: ${COMMUNITY_DB_URL:jdbc:h2:file:./data/hireland-job-community}
+    username: sa
+    password: ${COMMUNITY_DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+community:
+  seed-enabled: ${COMMUNITY_SEED_ENABLED:true}
+  frontend-origin: ${COMMUNITY_FRONTEND_ORIGIN:http://localhost:5175}
+stripe:
+  secret-key: ${STRIPE_SECRET_KEY:}
+  price-id: ${STRIPE_PRICE_ID:}
+  success-url: ${STRIPE_SUCCESS_URL:http://localhost:5175/payment/success?session_id={CHECKOUT_SESSION_ID}}
+  cancel-url: ${STRIPE_CANCEL_URL:http://localhost:5175/payment/cancel}
