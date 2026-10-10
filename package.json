@@ -6,7 +6,15 @@
   "engines": { "node": ">=24.16.0 <25", "npm": ">=11 <12" },
   "packageManager": "npm@11.13.0",
   "scripts": {
-    "check:m0": "node scripts/check-m0.mjs && tsc --noEmit",
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build --webpack",
+    "start": "next start --hostname 127.0.0.1",
+    "typecheck": "next typegen && tsc --noEmit",
+    "db:migrate": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/db-migrate.ts",
+    "db:seed": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/db-seed.ts",
+    "db:setup": "npm run db:migrate && npm run db:seed",
+    "test": "node --conditions=react-server --test tests/*.test.ts",
+    "check:m0": "node scripts/check-m0.mjs && npm run typecheck",
     "check:providers": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/check-providers.mjs"
   },
   "dependencies": {

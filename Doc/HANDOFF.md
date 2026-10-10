@@ -4,10 +4,10 @@
 
 ## 当前真实状态
 
-- M0 完成；有依赖清单/锁文件、可执行 schema、TypeScript 内部接口和验证脚本。网页、业务服务、业务数据库和 seed 尚未实现。
+- M0、M1 完成；App Router 页面、版本化迁移、幂等 seed、Profile/申请服务与 Server Actions 已实现，10 条虚构岗位可浏览。业务 SQLite 文件本地持久化，未提交到 Git。
 - 已分析原 PRD 与全部六页比赛 PDF，已编写单体方案和 M0–M5 开发 prompts。
 - 用户已明确要求：一个 monolith，不分多个应用。
-- 锁定并安装 Next.js 16.4.0、React 19.3.0、TypeScript 5.9.3、Stripe SDK 23.0.0；使用 Node 24.16.0/npm 11.13.0、内置 SQLite 3.53.0。安装、CLI、schema 与类型检查通过；网页构建尚未验证。
+- 锁定并安装 Next.js 16.4.0、React 19.3.0、TypeScript 5.9.3、Stripe SDK 23.0.0；使用 Node 24.16.0/npm 11.13.0、内置 SQLite 3.53.0。M1 类型、业务测试、生产构建与浏览器操作通过。
 - OpenRouter 凭据/额度/真实调用：BLOCKED，缺 API key 与模型配置。
 - Stripe sandbox 认证：BLOCKED，缺 test key；真实测试交易尚未实现。
 - 真实用户访谈、反馈修改、演示录屏：未完成。
@@ -18,7 +18,7 @@
 | 阶段 | 状态 | 证据 |
 |---|---|---|
 | M0 范围与外部依赖检查 | DONE | Doc/evidence/M0_CHECKS.md；外部凭据阻塞明确记录，M1 可开始 |
-| M1 应用骨架与持久化 | NOT_STARTED | 无 |
+| M1 应用骨架与持久化 | DONE | Doc/evidence/M1_CHECKS.md；生产构建、10 个测试、浏览器操作与重启持久化 |
 | M2 真实 AI 核心闭环 | NOT_STARTED | 无 |
 | M3 社区与支付 bonus | NOT_STARTED | 无 |
 | M4 测试与反馈迭代 | NOT_STARTED | 无 |
@@ -28,15 +28,16 @@
 
 ## 继续工作入口
 
-下一步执行 `Doc/02_MILESTONE_PROMPTS.md` 中的 M1。阅读 AGENTS.md、README、`Doc/01_MONOLITH_PLAN.md` 和 `Doc/03_M0_DECISIONS.md`。旧 `00_MASTER_PRD.md` 中三个独立 App 要求已失效。缺密钥不阻塞 M1；不要重复初始化一个新仓库或用 create-next-app 覆盖已锁定配置。
+下一步执行 `Doc/02_MILESTONE_PROMPTS.md` 中的 M2。阅读 AGENTS.md、README、`Doc/01_MONOLITH_PLAN.md`、M0 决策和 M1 证据，保留已工作的单体。不要用 create-next-app 覆盖现有项目。M1 没有 AI mock 或真实评分；M2 必须接真实 OpenRouter，缺凭据时据实列出阻塞。
 
 ## 环境与运行
 
 - 本机 Node 24.16.0/npm 11.13.0，`.nvmrc` 与 package-lock 给出复现基线。
 - `npm ci` 安装；本次实际安装与离线重装使用 `--ignore-scripts --no-audit --no-fund --cache /tmp/hireland-npm-cache`。未执行供应商安装脚本，后续 app build 仍需验证。
-- `npm run check:m0` 通过，包含 SQLite 和 tsc；只检查现有 schema/contracts，不代表产品运行。
+- `npm run check:m0` 通过，包含原始 schema smoke 与全项目 typecheck；`npm test` 10/10；`npm run build` webpack 生产构建通过。
 - `npm run check:providers` 当前退出 2：缺配置；供应商验证未完成。
-- 尚无 dev/build/start 或业务迁移/seed 命令，这些是 M1 的工作。
+- `npm run db:setup` 初始化与 seed；`npm run dev` 开发、`npm run build` 构建、`npm start` 生产运行。端口 3000，仅绑定 127.0.0.1；不要同时运行 dev/start。
+- `npm run typecheck` 先 `next typegen` 再 tsc；next-env 与 .next 类型忽略，不需提交。Next 自动修改 AGENTS 功能在配置中关闭，保留团队指令。
 - 不在此文件存储密钥、完整 CV、真实个人资料或含凭据的日志。
 - 新账号的工具权限、供应商登录与本地环境不会自动继承；需要重新检查，不假定可用。
 
@@ -55,6 +56,8 @@
 
 ## M0 实施交接
 
+下文保留 M0 时点记录；当前 schema runner、类型范围与 seed 等以本文件 M1 交接为准。
+
 - 决策与来源：`Doc/03_M0_DECISIONS.md`；比赛 PDF 与原方案已重新核对。
 - schema：`db/migrations/001_initial.sql`，9 表、UTC 毫秒、字符串 ID；M1 实现文件迁移 runner、版本记录、连接复用、WAL 与 seed。SQL 重复执行不删表；没有业务数据库可迁移。
 - 接口：`src/shared/contracts.ts`；只声明接口，不是业务实现。固定 demo-user 从服务端取得。tsconfig 目前只覆盖 shared，M1 必须扩展。
@@ -63,3 +66,17 @@
 - 用户研究：`Doc/evidence/USER_RESEARCH.md` 是待执行访谈与假设模板；数据登记：`DATA_SOURCES.md` 是待填写模板。没有编造反馈或数据。
 - 团队待办：在忽略的 `.env.local` 配置自己的 API key/model/test key，复验 provider readiness；开始匿名访谈。M2 必须完成实际有用的 OpenRouter 调用，M3 必须另做真实 sandbox 交易。
 - M1 最小下一步：沿用包/schema/contracts，建立 App Router、服务端 DB 和数据 seed，再完成岗位/Profile/申请持久化及浏览器旅程。仅基础 CSS，不加入 ORM、多服务、上传或爬虫。
+
+## M1 实施交接
+
+- 提交标题：`feat: complete M1 monolith discovery and application tracking`，实际 hash 用 git log 核查；用户已授权直接本地 commit。
+- 页面：`src/app/page.tsx`、`profile/page.tsx`、`jobs/[jobId]/page.tsx`、`applications/page.tsx`；统一 layout/nav、基础 CSS、loading/error/not-found。英文展示用于现场 demo。
+- 数据：`src/server/db.ts` 复用单进程连接，开启外键/WAL/5 秒 busy timeout；按 checksum 和事务记录 schema_migrations。初始 9 表加迁移记录表。不要编辑 001 SQL，新增版本迁移。
+- seed：`data/seed/jobs.json`（10 条 Technology 岗位，9 UNKNOWN/1 CLOSED，无申请 URL）、`demo-cv.txt` 和 manifest；`src/server/seed.ts` 仅添加缺失 jobKey，不覆盖业务数据，不自动 reset。
+- 服务：identity/jobs/profile/applications/results 都为 server-only；实现 M0 的 M1 函数，服务器固定身份与归属检查。清空 Profile 同时清理当前用户评估，不删申请/其他用户数据。
+- Server Actions：`src/actions/profile.ts` 与 applications.ts；校验、业务调用、revalidatePath。客户端 forms 使用 useActionState 显示 pending/错误/成功，不存 localStorage。
+- 修复：SQL 搜索参数及通配符转义；成功提交表单后 checkbox/select 被 reset 到旧值的问题；CV 验证失败保留草稿。键盘 label、焦点、skip link 与 aria-live 已检查。
+- 验证：`npm test` 10 个通过、check:m0/typecheck 和 production build 通过；实际浏览器保存/清空 CV、搜索、保存/更新/删除申请、404、手机/桌面无横向溢出、生产重启持久化。详见 evidence；已有真实 AI/付款/访谈仍为零。
+- 当前本机演示数据：验收创建的虚构 CV（Technology）及一个 job-01 的 INTERVIEW 记录保留在忽略的本地 DB；新 clone 不含这些用户记录，先 db:setup 再从 UI 加载 CV/保存岗位即可。
+- M2 入口：沿用 getProfile/getJob、shared AssessmentOutput、Result 与评估表，新增 OpenRouter adapter、assessJob、评估 action/card；替换详情页“not available yet”提示。缓存须含 CV/JD/偏好/prompt/model；真实证据和离线故障模拟分开。
+- 剩余：OpenRouter/Stripe 配置与外部调用、社区/支付、用户反馈、M4/M5 完整比赛证据。不得因 M1 可运行便宣称整场比赛要求已满足。

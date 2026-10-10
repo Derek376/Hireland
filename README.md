@@ -2,20 +2,46 @@
 
 面向爱尔兰毕业生的岗位发现、AI 申请建议与申请追踪原型。
 
-M0 已完成：版本锁定、数据 schema、内部接口、环境检查与研究模板。网页与业务流程从 M1 开始实现；目前没有 dev/build/start 命令。
+M0、M1 已完成：一个可运行的岗位发现、CV/偏好保存和申请追踪原型。AI 是 M2 的下一步；社区与 Stripe 是 M3，当前界面明确标为尚未提供。
 
 一个 Next.js 全栈单体、一个端口、本地 SQLite（Node 内置驱动）。使用 Node 24.16.0 / npm 11.13.0。
 
 ```bash
 nvm use
 npm ci
+npm run db:setup
+npm run dev
+```
+
+打开 [本地应用](http://127.0.0.1:3000)：Discover → My profile → 加载虚构 CV 并保存 → 打开岗位详情 → Save to tracker → Applications 修改状态/删除。保存不会向公司提交申请。
+
+无需任何供应商密钥即可运行 M1。默认数据库 `data/hireland.sqlite`；只有单个本地演示用户，请使用虚构信息。10 个岗位与 CV 都是明确标注的 synthetic 数据，没有真实申请链接。
+
+`db:setup` 执行版本化迁移与幂等 seed；重复执行保留 Profile、申请、评论与权益，不覆盖已有岗位、不删除数据库。网页首次连接会补迁移与 demo 用户，但不会自动 seed 或 reset。更改已应用迁移会报错，后续修改应添加新迁移。
+
+生产运行和验证：
+
+```bash
+npm run build
+npm start
+```
+
+不要同时启动 dev 与 start 占用同一端口；端口 3000，两者都只绑定本机 127.0.0.1。业务采用 Node runtime，生产构建使用 webpack；开发使用 Next 默认 Turbopack。
+
+```bash
+npm test
 npm run check:m0
+```
+
+`npm test` 在临时数据库验证业务约束、身份归属和新进程持久化，不改 demo 数据。`check:m0` 保留原 schema 检查并检查整个项目类型；它先用 `next typegen` 生成忽略的 Next 类型，因此干净 checkout 无需先启动服务器。完整生产构建和浏览器流程已验证，详见 `Doc/evidence/M1_CHECKS.md`。
+
+需要自定义数据库路径或开始 M2/M3 时，复制配置并编辑 `.env.local`：
+
+```bash
 cp .env.example .env.local
 ```
 
-`check:m0` 验证安装版本、临时 SQLite schema/约束/持久化和内部接口类型，不创建或重置业务数据库。Next.js 网页构建与端到端行为尚待 M1 验证。
-
-编辑 `.env.local` 填入自己的 OpenRouter key、支持结构化输出的 model 和 Stripe sandbox key，然后运行：
+`DATABASE_PATH` 是本地路径，相对路径基于仓库根目录；Next 与数据库脚本均读取 `.env.local`。设置自己的 OpenRouter key、支持结构化输出的 model 和 Stripe sandbox key 后运行：
 
 ```bash
 npm run check:providers
@@ -31,5 +57,6 @@ npm run check:providers
 - [M0 技术决策、schema 与接口约定](Doc/03_M0_DECISIONS.md)
 - [用户访谈提纲与记录模板](Doc/evidence/USER_RESEARCH.md)
 - [数据来源登记模板](Doc/evidence/DATA_SOURCES.md)
+- [M1 测试与浏览器验收证据](Doc/evidence/M1_CHECKS.md)
 - [原始 PRD 草稿](Doc/00_MASTER_PRD.md)
 - [HackUCD 2026 比赛要求](Doc/hackucd-2026-challenges.pdf)

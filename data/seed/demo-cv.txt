@@ -1,0 +1,28 @@
+FICTIONAL DEMO CV — all details below are invented.
+
+Alex Rowan
+Graduate software developer, based in Dublin
+
+Education
+BSc Computing, fictional institution, 2026
+Coursework: web development, relational databases, software testing.
+
+Projects
+Student Event Planner — TypeScript, React, SQLite
+- Built accessible registration forms and a searchable event list.
+- Modelled event records in SQL and wrote tests for duplicate registrations.
+- Collaborated with three classmates using Git and pull requests.
+
+Study Notes API — Python, HTTP, SQL
+- Built a small API for saving and retrieving study notes.
+- Documented endpoints and added input validation.
+
+Skills
+TypeScript, JavaScript, React, HTML, CSS, SQL, Python, Git.
+Basic Linux command-line experience.
+
+Preferences
+Graduate or junior web/software roles in Ireland; interested in learning backend development.
+
+No claims about work authorisation, visa sponsorship, professional cloud experience,
+embedded hardware, security clearance or commercial employment are provided.

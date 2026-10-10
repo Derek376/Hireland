@@ -1,0 +1,11 @@
+{
+  "createdAt": "2026-10-10",
+  "sourceType": "synthetic",
+  "author": "Hireland team with AI drafting assistance",
+  "reuse": "Original demo fixtures for this prototype; no external dataset imported",
+  "files": ["jobs.json", "demo-cv.txt"],
+  "jobCount": 10,
+  "assumptions": ["All company names, vacancies and CV details are fictional", "Dates are fictional fixture dates, not scraped publication dates", "No real application URLs exist", "UNKNOWN does not imply OPEN", "No user-research evidence is derived from these fixtures"],
+  "boundaryCases": ["Unknown publication date", "Unknown availability", "One CLOSED fixture", "Same company with different job keys", "Repeated seed preserves existing jobs without duplicate insertion"],
+  "comments": "Not created until M3"
+}
