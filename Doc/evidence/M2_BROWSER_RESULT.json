@@ -1,0 +1,45 @@
+{
+  "recordedAt": "2026-10-10T11:34:18.509Z",
+  "source": "Real browser Server Action to OpenRouter, then SQLite readback; fictional seed CV and job-04 only. cached=true describes the later read, not the original call.",
+  "cvFile": "data/seed/demo-cv.txt",
+  "normalizedCvSha256": "15ca89dc98b22d2095646f6343993836dd59be0021dd547890f0ff00d63cd380",
+  "assessment": {
+    "id": "4f8dfd4a-53b5-4087-a8ab-ad5af85d317d",
+    "jobId": "job-04",
+    "modelId": "openai/gpt-4.1-mini",
+    "promptVersion": "hireland-assessment-v11",
+    "createdAt": 1791631957669,
+    "cached": true,
+    "output": {
+      "decision": "YES",
+      "score": 90,
+      "reason": "The candidate has strong evidence of skills in HTML, CSS, JavaScript, React, and Git, matching the core job requirements. They have built accessible forms and a React project, demonstrating basic accessibility knowledge. The CV aligns well with the junior frontend developer role requirements.",
+      "strengths": [
+        {
+          "reason": "Built accessible registration forms and a searchable event list using React, demonstrating basic accessibility knowledge.",
+          "cvQuote": "Student Event Planner — TypeScript, React, SQLite",
+          "jdQuote": "- Basic accessibility knowledge and Git."
+        },
+        {
+          "reason": "Experience with HTML, CSS, JavaScript and a React project, fulfilling the core frontend technology requirements.",
+          "cvQuote": "TypeScript, JavaScript, React, HTML, CSS, SQL, Python, Git.",
+          "jdQuote": "- HTML, CSS, JavaScript and one React project."
+        }
+      ],
+      "gaps": [],
+      "unknowns": [
+        "Work authorisation and visa sponsorship status is not provided and may affect eligibility.",
+        "No information on commercial employment experience or professional cloud experience.",
+        "The job status is UNKNOWN and the vacancy is synthetic, so practical availability and fit are unverified."
+      ]
+    }
+  },
+  "application": {
+    "id": "aa868cd3-a328-4cce-995e-666068a3043b",
+    "jobId": "job-04",
+    "status": "APPLIED",
+    "createdAt": 1791631999044,
+    "updatedAt": 1791632037327
+  },
+  "existingApplicationPreserved": true
+}

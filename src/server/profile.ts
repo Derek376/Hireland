@@ -5,6 +5,8 @@ import { getDatabase, transaction } from "./db.ts";
 import { getCurrentDemoUser } from "./identity.ts";
 import { databaseResult, failure, success } from "./results.ts";
 
+// Monotonic within this process, including clear + immediately resave of identical text.
+const profileClock = globalThis as typeof globalThis & { hirelandProfileClock?: number };
 const categories: Category[] = ["Technology", "Finance", "Consulting", "Other"];
 export async function getProfile(): Promise<Result<Profile | null>> {
   return databaseResult(async () => {
@@ -21,7 +23,9 @@ export async function saveProfile(input: { cvText: string; preferences: Category
     const user = await getCurrentDemoUser();
     const cvText = input.cvText.trim().replace(/\r\n?/g, "\n");
     const preferences = categories.filter(category => input.preferences.includes(category));
-    const updatedAt = Date.now();
+    const existing = getDatabase().prepare("SELECT updated_at FROM profiles WHERE user_id=?").get(user.id)?.updated_at as number | undefined;
+    const updatedAt = Math.max(Date.now(), (existing ?? 0) + 1, (profileClock.hirelandProfileClock ?? 0) + 1);
+    profileClock.hirelandProfileClock = updatedAt;
     getDatabase().prepare("INSERT INTO profiles VALUES (?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET cv_text=excluded.cv_text,cv_hash=excluded.cv_hash,preferences_json=excluded.preferences_json,updated_at=excluded.updated_at")
       .run(user.id, cvText, createHash("sha256").update(cvText).digest("hex"), JSON.stringify(preferences), updatedAt);
     return success({ cvText, preferences, updatedAt });

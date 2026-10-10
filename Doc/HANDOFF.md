@@ -8,7 +8,7 @@
 - 已分析原 PRD 与全部六页比赛 PDF，已编写单体方案和 M0–M5 开发 prompts。
 - 用户已明确要求：一个 monolith，不分多个应用。
 - 锁定并安装 Next.js 16.4.0、React 19.3.0、TypeScript 5.9.3、Stripe SDK 23.0.0；使用 Node 24.16.0/npm 11.13.0、内置 SQLite 3.53.0。M1 类型、业务测试、生产构建与浏览器操作通过。
-- OpenRouter 凭据/额度/真实调用：BLOCKED，缺 API key 与模型配置。
+- OpenRouter 真实功能：PASS，四组样例及生产浏览器调用成功。当前模型 `openai/gpt-4.1-mini`，prompt `hireland-assessment-v11`；密钥保存在忽略的 `.env.local`。M2 技术完成，首位真人试用仍待记录。
 - Stripe sandbox 认证：BLOCKED，缺 test key；真实测试交易尚未实现。
 - 真实用户访谈、反馈修改、演示录屏：未完成。
 - 用户授权每次工作结束直接本地 commit，已写入 AGENTS.md 并更新阶段 prompts；不自动推送或部署。M0 提交标题为 `chore: complete M0 foundation and handoff`，实际 hash 用 git log 核查。
@@ -19,7 +19,7 @@
 |---|---|---|
 | M0 范围与外部依赖检查 | DONE | Doc/evidence/M0_CHECKS.md；外部凭据阻塞明确记录，M1 可开始 |
 | M1 应用骨架与持久化 | DONE | Doc/evidence/M1_CHECKS.md；生产构建、10 个测试、浏览器操作与重启持久化 |
-| M2 真实 AI 核心闭环 | NOT_STARTED | 无 |
+| M2 真实 AI 核心闭环 | IN_PROGRESS | Doc/evidence/M2_CHECKS.md；技术验收通过，首位真人试用未完成 |
 | M3 社区与支付 bonus | NOT_STARTED | 无 |
 | M4 测试与反馈迭代 | NOT_STARTED | 无 |
 | M5 复现与演示 | NOT_STARTED | 无 |
@@ -28,14 +28,14 @@
 
 ## 继续工作入口
 
-下一步执行 `Doc/02_MILESTONE_PROMPTS.md` 中的 M2。阅读 AGENTS.md、README、`Doc/01_MONOLITH_PLAN.md`、M0 决策和 M1 证据，保留已工作的单体。不要用 create-next-app 覆盖现有项目。M1 没有 AI mock 或真实评分；M2 必须接真实 OpenRouter，缺凭据时据实列出阻塞。
+下一步补 M2 首位真实用户试用记录；用户若要求 M3，可沿用已通过技术验收的核心闭环继续社区与 sandbox 支付。阅读 AGENTS.md、README、单体计划和 M2 证据，不重建项目。真人反馈不能由 agent 浏览器检查替代，不因技术完成宣称比赛全部达标。
 
 ## 环境与运行
 
 - 本机 Node 24.16.0/npm 11.13.0，`.nvmrc` 与 package-lock 给出复现基线。
 - `npm ci` 安装；本次实际安装与离线重装使用 `--ignore-scripts --no-audit --no-fund --cache /tmp/hireland-npm-cache`。未执行供应商安装脚本，后续 app build 仍需验证。
-- `npm run check:m0` 通过，包含原始 schema smoke 与全项目 typecheck；`npm test` 10/10；`npm run build` webpack 生产构建通过。
-- `npm run check:providers` 当前退出 2：缺配置；供应商验证未完成。
+- `npm run check:m0`、typecheck、webpack 生产 build 通过；当前 `npm test` 21/21。M2 真实样例命令及浏览器证据见下文。
+- OpenRouter 实际产品调用已验证；Stripe 配置仍缺，不能将综合 provider readiness 当作全部通过。
 - `npm run db:setup` 初始化与 seed；`npm run dev` 开发、`npm run build` 构建、`npm start` 生产运行。端口 3000，仅绑定 127.0.0.1；不要同时运行 dev/start。
 - `npm run typecheck` 先 `next typegen` 再 tsc；next-env 与 .next 类型忽略，不需提交。Next 自动修改 AGENTS 功能在配置中关闭，保留团队指令。
 - 不在此文件存储密钥、完整 CV、真实个人资料或含凭据的日志。
@@ -80,3 +80,16 @@
 - 当前本机演示数据：验收创建的虚构 CV（Technology）及一个 job-01 的 INTERVIEW 记录保留在忽略的本地 DB；新 clone 不含这些用户记录，先 db:setup 再从 UI 加载 CV/保存岗位即可。
 - M2 入口：沿用 getProfile/getJob、shared AssessmentOutput、Result 与评估表，新增 OpenRouter adapter、assessJob、评估 action/card；替换详情页“not available yet”提示。缓存须含 CV/JD/偏好/prompt/model；真实证据和离线故障模拟分开。
 - 剩余：OpenRouter/Stripe 配置与外部调用、社区/支付、用户反馈、M4/M5 完整比赛证据。不得因 M1 可运行便宣称整场比赛要求已满足。
+
+## M2 实施交接
+
+- 提交标题：`feat: implement M2 OpenRouter assessments and evidence validation`；实际 hash 用 git log 核查。无推送或部署。
+- 入口：`src/actions/assessments.ts` 显式同意校验 → `src/server/assessments.ts` 服务端读取用户/Profile/Job → `src/server/providers/openrouter.ts` 真实 HTTP → `src/server/assessment-output.ts` schema 和原文校验 → SQLite → `src/components/assessment-panel.tsx`。页面读取无供应商调用，失败无 mock 评分。
+- 缓存包含用户、岗位、完整输入 hash、model 和 prompt；有效历史成功结果保留。坏缓存拒绝显示；同输入请求复用、不同输入 BUSY。每输入最多两次失败尝试，进程内预算不是持久限额。20 秒 timeout 覆盖响应体；64 KiB 响应上限、1,800 输出 tokens、无自动重试。
+- 原文候选排除标题，明确 Requirements 段排除后续可选项；全文仍发送。缺少 CV 证据时谨慎措辞，不等于证明不会。严格检查引用、结构、分数和同一要求的矛盾。明显指令干扰返回 NEEDS_REVIEW/null，不承诺完整防注入。具体语义局限见 M2_CHECKS。
+- 修改期间的过期请求拒绝落库；profile updatedAt 使用单调时钟，防同毫秒清空重存。无 schema 变更，无数据库 reset。Profile 保存/清空会刷新岗位页当前评估。
+- 当前 `.env.local` 配置由用户授权提供；原忽略的 `.env` 已迁移至 `.env.local`。实际比较后将非秘密模型名换为 `openai/gpt-4.1-mini`；API key 未打印、未改变、未提交。新账号须自行配置，不能自动继承凭据。
+- 检查：21 个离线测试、check:m0/typecheck、生产 build；四组真实最终输出加四次缓存读取；实际生产浏览器 consent/pending/真实结果/保存/APPLIED/缓存；生产重启保持相同评估与申请、390px 无横向溢出、浏览器 warn/error 空。失败路径是离线模拟，不声称供应商真实发生故障。
+- 实验命令 `npm run check:m2 -- --write-evidence` 使用临时 DB，只用虚构 CV/JD；四次真实请求有费用。当前结果 `M2_REAL_RESULTS.json`；11 轮此前真实质量实验 `M2_REAL_ITERATIONS.json`；原输入 scenarios-v1.json 和当前 scenarios.json 保留来源 hash。JSON humanReview=PENDING，不是真人审核。
+- 浏览器证据 `M2_BROWSER_RESULT.json` 与两张 PNG。当前忽略的本机 DB 保留虚构 CV、job-04 的真实 v11 评估和 APPLIED，以及原 job-01 INTERVIEW；重启已核对。新 clone 无这些业务记录。
+- 剩余：首位求职用户试用/匿名反馈。收到“继续”不能写成反馈；按 USER_RESEARCH.md 收集观察，必要时修改后再标 DONE。M3/M4/M5 未实施，Stripe sandbox 尚无真实交易。当前状态 IN_PROGRESS 仅因真人试用未完成，代码和技术验收已经完成。
